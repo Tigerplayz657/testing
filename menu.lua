@@ -66,13 +66,18 @@ local function applyESP(character, plr)
             if not billboard then
                 billboard = Instance.new("BillboardGui", head)
                 billboard.Name = "NameTag"
-                billboard.Size = UDim2.new(0,100,0,20)
+                billboard.Size = UDim2.new(0,100,0,25)
+                billboard.StudsOffset = Vector3.new(0,2.5,0)
                 billboard.AlwaysOnTop = true
 
                 local text = Instance.new("TextLabel", billboard)
                 text.Size = UDim2.new(1,0,1,0)
                 text.BackgroundTransparency = 1
                 text.TextColor3 = Color3.new(1,1,1)
+                text.TextStrokeTransparency = 0
+                text.TextStrokeColor3 = Color3.new(0,0,0)
+                text.Font = Enum.Font.SourceSansBold
+                text.TextSize = 14
                 text.Text = plr.Name
             end
         else
@@ -90,23 +95,27 @@ local function applyESP(character, plr)
             if not bar then
                 bar = Instance.new("BillboardGui", head)
                 bar.Name = "HealthBar"
-                bar.Size = UDim2.new(0,100,0,10)
-                bar.StudsOffset = Vector3.new(0,2,0)
+                bar.Size = UDim2.new(0,4,0,50)
+                bar.StudsOffset = Vector3.new(0,3.5,0)
                 bar.AlwaysOnTop = true
 
                 local bg = Instance.new("Frame", bar)
                 bg.Size = UDim2.new(1,0,1,0)
                 bg.BackgroundColor3 = Color3.new(0,0,0)
+                bg.BorderSizePixel = 0
 
                 local hp = Instance.new("Frame", bg)
                 hp.Name = "HP"
                 hp.Size = UDim2.new(1,0,1,0)
                 hp.BackgroundColor3 = Color3.new(0,1,0)
+                hp.BorderSizePixel = 0
+                hp.Position = UDim2.new(0,0,1,0)
+                hp.AnchorPoint = Vector2.new(0,1)
 
                 RunService.RenderStepped:Connect(function()
                     if humanoid and humanoid.Parent and hp and hp.Parent then
                         local healthPercent = humanoid.Health / humanoid.MaxHealth
-                        hp.Size = UDim2.new(math.clamp(healthPercent, 0, 1), 0, 1, 0)
+                        hp.Size = UDim2.new(1,0, math.clamp(healthPercent, 0, 1), 0)
                     end
                 end)
             end
