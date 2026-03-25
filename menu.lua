@@ -95,15 +95,19 @@ local function applyESP(character, plr)
             if not bar then
                 bar = Instance.new("BillboardGui", head)
                 bar.Name = "HealthBar"
-                bar.Size = UDim2.new(0,4,0,50)
+                bar.Size = UDim2.new(0,6,0,60)
                 bar.StudsOffset = Vector3.new(0,3.5,0)
                 bar.AlwaysOnTop = true
 
+                -- Background track
                 local bg = Instance.new("Frame", bar)
+                bg.Name = "Background"
                 bg.Size = UDim2.new(1,0,1,0)
-                bg.BackgroundColor3 = Color3.new(0,0,0)
+                bg.BackgroundColor3 = Color3.new(0.1,0.1,0.1)
                 bg.BorderSizePixel = 0
-
+                bg.Position = UDim2.new(0,0,0,0)
+                
+                -- Health bar with rounded corners effect
                 local hp = Instance.new("Frame", bg)
                 hp.Name = "HP"
                 hp.Size = UDim2.new(1,0,1,0)
@@ -112,10 +116,69 @@ local function applyESP(character, plr)
                 hp.Position = UDim2.new(0,0,1,0)
                 hp.AnchorPoint = Vector2.new(0,1)
 
+                -- Glow effect (outer frame)
+                local glow = Instance.new("Frame", bg)
+                glow.Name = "Glow"
+                glow.Size = UDim2.new(1.2,0,1,0)
+                glow.BackgroundColor3 = Color3.new(0,0,0)
+                glow.BackgroundTransparency = 0.8
+                glow.BorderSizePixel = 0
+                glow.Position = UDim2.new(-0.1,0,0,0)
+                glow.ZIndex = hp.ZIndex - 1
+
+                -- Health text
+                local text = Instance.new("TextLabel", bg)
+                text.Name = "HealthText"
+                text.Size = UDim2.new(1,0,0,12)
+                text.Position = UDim2.new(0,0,-0.2,0)
+                text.BackgroundTransparency = 1
+                text.TextColor3 = Color3.new(1,1,1)
+                text.TextStrokeTransparency = 0.3
+                text.TextStrokeColor3 = Color3.new(0,0,0)
+                text.Font = Enum.Font.SourceSansBold
+                text.TextSize = 10
+                text.Text = "100/100"
+                text.ZIndex = hp.ZIndex + 1
+
+                -- Smooth animation
+                local tweenService = game:GetService("TweenService")
+                local lastHealth = humanoid.Health
+
                 RunService.RenderStepped:Connect(function()
                     if humanoid and humanoid.Parent and hp and hp.Parent then
                         local healthPercent = humanoid.Health / humanoid.MaxHealth
-                        hp.Size = UDim2.new(1,0, math.clamp(healthPercent, 0, 1), 0)
+                        local currentHealth = math.floor(humanoid.Health)
+                        local maxHealth = math.floor(humanoid.MaxHealth)
+                        
+                        -- Update health text
+                        if text then
+                            text.Text = currentHealth .. "/" .. maxHealth
+                        end
+                        
+                        -- Gradient colors based on health
+                        local healthColor
+                        if healthPercent > 0.6 then
+                            healthColor = Color3.new(0,1,0) -- Green
+                        elseif healthPercent > 0.3 then
+                            healthColor = Color3.new(1,1,0) -- Yellow
+                        else
+                            healthColor = Color3.new(1,0,0) -- Red
+                        end
+                        
+                        -- Smooth color transition
+                        local colorTween = tweenService:Create(hp, TweenInfo.new(0.3), {BackgroundColor3 = healthColor})
+                        colorTween:Play()
+                        
+                        -- Smooth size animation
+                        local targetSize = math.clamp(healthPercent, 0, 1)
+                        local sizeTween = tweenService:Create(hp, TweenInfo.new(0.2), {Size = UDim2.new(1,0, targetSize, 0)})
+                        sizeTween:Play()
+                        
+                        -- Update glow color to match health
+                        if glow then
+                            glow.BackgroundColor3 = healthColor
+                            glow.BackgroundTransparency = 0.9 - (healthPercent * 0.3) -- More visible when low health
+                        end
                     end
                 end)
             end
