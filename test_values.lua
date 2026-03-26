@@ -99,25 +99,41 @@ end
 local function checkHostileIndicators(plr)
     print("=== Checking hostile indicators for", plr.Name, "===")
     
-    -- Check for emoji in name display
+    -- Check for emoji in name display (above head)
     if plr.Character and plr.Character:FindFirstChild("Head") then
         local head = plr.Character.Head
+        
+        -- Check for name tags/billboards above head
         for _, child in pairs(head:GetChildren()) do
-            if child:IsA("BillboardGui") or child:IsA("SurfaceGui") then
+            if child:IsA("BillboardGui") then
                 for _, textChild in pairs(child:GetChildren()) do
                     if textChild:IsA("TextLabel") then
                         local text = textChild.Text
+                        print("Name tag text:", text)
                         if string.find(text, "💢") then
-                            print("FOUND HOSTILE EMOJI in:", child.Name, "Text:", text)
+                            print("FOUND HOSTILE EMOJI in name tag!")
+                            print("Location:", child:GetFullName())
+                            print("Full text:", text)
                         end
-                        print("TextLabel content:", text)
                     end
+                end
+            end
+        end
+        
+        -- Also check all character descendants for any text with emoji
+        for _, child in pairs(plr.Character:GetDescendants()) do
+            if child:IsA("TextLabel") then
+                local text = child.Text
+                if string.find(text, "💢") then
+                    print("FOUND HOSTILE EMOJI in character descendant!")
+                    print("Location:", child:GetFullName())
+                    print("Full text:", text)
                 end
             end
         end
     end
     
-    -- Check player display name changes
+    -- Check player display name (might be modified)
     if plr.DisplayName then
         print("DisplayName:", plr.DisplayName)
         if string.find(plr.DisplayName, "💢") then
@@ -125,16 +141,12 @@ local function checkHostileIndicators(plr)
         end
     end
     
-    -- Check for any UI elements with emoji
+    -- Check if there's a custom name system
     for _, child in pairs(plr:GetChildren()) do
-        if child:IsA("BillboardGui") or child:IsA("SurfaceGui") then
-            for _, textChild in pairs(child:GetChildren()) do
-                if textChild:IsA("TextLabel") then
-                    local text = textChild.Text
-                    if string.find(text, "💢") then
-                        print("FOUND HOSTILE EMOJI in player UI:", child.Name, "Text:", text)
-                    end
-                end
+        if child:IsA("StringValue") and (string.find(string.lower(child.Name), "name") or string.find(string.lower(child.Name), "display")) then
+            print("Custom name value:", child.Name, "=", child.Value)
+            if string.find(child.Value, "💢") then
+                print("FOUND HOSTILE EMOJI in custom name!")
             end
         end
     end
