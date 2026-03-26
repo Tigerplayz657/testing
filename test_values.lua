@@ -95,35 +95,51 @@ local function storePlayerValues(plr)
     end
 end
 
--- Function to check for value changes
-local function checkValueChanges(plr)
-    if not playerValues[plr.Name] then return end
+-- Function to check for hostile/arrestable indicators
+local function checkHostileIndicators(plr)
+    print("=== Checking hostile indicators for", plr.Name, "===")
     
-    print("=== Checking changes for", plr.Name, "===")
-    
-    -- Check player values
-    for _, child in pairs(plr:GetChildren()) do
-        if child:IsA("ValueBase") then
-            local key = "Player_" .. child.Name
-            if playerValues[plr.Name][key] ~= child.Value then
-                print("CHANGED: Player." .. child.Name .. " from " .. tostring(playerValues[plr.Name][key]) .. " to " .. tostring(child.Value))
-                playerValues[plr.Name][key] = child.Value
-            end
-        end
-    end
-    
-    -- Check character values
-    if plr.Character then
-        for _, child in pairs(plr.Character:GetChildren()) do
-            if child:IsA("ValueBase") then
-                local key = "Char_" .. child.Name
-                if playerValues[plr.Name][key] ~= child.Value then
-                    print("CHANGED: Char." .. child.Name .. " from " .. tostring(playerValues[plr.Name][key]) .. " to " .. tostring(child.Value))
-                    playerValues[plr.Name][key] = child.Value
+    -- Check for emoji in name display
+    if plr.Character and plr.Character:FindFirstChild("Head") then
+        local head = plr.Character.Head
+        for _, child in pairs(head:GetChildren()) do
+            if child:IsA("BillboardGui") or child:IsA("SurfaceGui") then
+                for _, textChild in pairs(child:GetChildren()) do
+                    if textChild:IsA("TextLabel") then
+                        local text = textChild.Text
+                        if string.find(text, "💢") then
+                            print("FOUND HOSTILE EMOJI in:", child.Name, "Text:", text)
+                        end
+                        print("TextLabel content:", text)
+                    end
                 end
             end
         end
     end
+    
+    -- Check player display name changes
+    if plr.DisplayName then
+        print("DisplayName:", plr.DisplayName)
+        if string.find(plr.DisplayName, "💢") then
+            print("FOUND HOSTILE EMOJI in DisplayName!")
+        end
+    end
+    
+    -- Check for any UI elements with emoji
+    for _, child in pairs(plr:GetChildren()) do
+        if child:IsA("BillboardGui") or child:IsA("SurfaceGui") then
+            for _, textChild in pairs(child:GetChildren()) do
+                if textChild:IsA("TextLabel") then
+                    local text = textChild.Text
+                    if string.find(text, "💢") then
+                        print("FOUND HOSTILE EMOJI in player UI:", child.Name, "Text:", text)
+                    end
+                end
+            end
+        end
+    end
+    
+    print("---")
 end
 
 -- Initial scan and store values
@@ -136,11 +152,11 @@ end
 -- Scan for remotes
 scanRemotes()
 
--- Watch for value changes continuously
+-- Watch for hostile indicators continuously
 spawn(function()
     while true do
         for _, plr in pairs(Players:GetPlayers()) do
-            checkValueChanges(plr)
+            checkHostileIndicators(plr)
         end
         task.wait(1) -- Check every second
     end
