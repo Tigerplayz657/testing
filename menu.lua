@@ -80,6 +80,30 @@ trollContent.ScrollBarThickness = 8
 trollContent.Visible = false
 trollContent.CanvasSize = UDim2.new(0, 0, 0, 150)
 
+local function makeModernButton(text, parent, yPos)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(1, -10, 0, 40)
+    btn.Position = UDim2.new(0, 5, 0, yPos)
+    btn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = Color3.fromRGB(100, 100, 120)
+    btn.Text = text
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.Font = Enum.Font.SourceSans
+    btn.TextSize = 14
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Hover effect
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    end)
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+    end)
+    
+    return btn
+end
+
 -- ESP Buttons
 local espToggle = makeModernButton("ESP: OFF", espContent, 10)
 local xrayToggle = makeModernButton("X-Ray: OFF", espContent, 65)
