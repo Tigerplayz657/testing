@@ -10,35 +10,133 @@ screenGui.Parent = player:FindFirstChildOfClass("PlayerGui") or player:WaitForCh
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.ResetOnSpawn = false
 
+-- Main frame with modern design
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 200, 0, 200)
+frame.Size = UDim2.new(0, 250, 0, 400)
 frame.Position = UDim2.new(0, 20, 0, 100)
-frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+frame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+frame.BorderSizePixel = 0
 frame.Visible = true
 
-local function makeButton(text, posY)
-    local btn = Instance.new("TextButton", frame)
-    btn.Size = UDim2.new(1, -10, 0, 30)
-    btn.Position = UDim2.new(0, 5, 0, posY)
+-- Add shadow effect
+local shadow = Instance.new("Frame", frame)
+shadow.Size = UDim2.new(1, 10, 1, 10)
+shadow.Position = UDim2.new(0, 5, 0, 5)
+shadow.BackgroundColor3 = Color3.fromRGB(0,0,0)
+shadow.BackgroundTransparency = 0.8
+shadow.BorderSizePixel = 0
+shadow.ZIndex = frame.ZIndex - 1
+
+-- Title bar
+local titleBar = Instance.new("Frame", frame)
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.Position = UDim2.new(0, 0, 0, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(25,25,35)
+titleBar.BorderSizePixel = 0
+
+local title = Instance.new("TextLabel", titleBar)
+title.Size = UDim2.new(1, 0, 1, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "🎮 ESP MENU"
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+
+-- Category buttons
+local categoryFrame = Instance.new("Frame", frame)
+categoryFrame.Size = UDim2.new(1, -20, 0, 50)
+categoryFrame.Position = UDim2.new(0, 10, 0, 50)
+categoryFrame.BackgroundTransparency = 1
+
+local espCategory = Instance.new("TextButton", categoryFrame)
+espCategory.Size = UDim2.new(0, 70, 1, 0)
+espCategory.Position = UDim2.new(0, 0, 0, 0)
+espCategory.BackgroundColor3 = Color3.fromRGB(40,40,50)
+espCategory.BorderSizePixel = 0
+espCategory.Text = "ESP"
+espCategory.TextColor3 = Color3.new(1,1,1)
+espCategory.Font = Enum.Font.Gotham
+
+local trollCategory = Instance.new("TextButton", categoryFrame)
+trollCategory.Size = UDim2.new(0, 70, 1, 0)
+trollCategory.Position = UDim2.new(0, 80, 0, 0)
+trollCategory.BackgroundColor3 = Color3.fromRGB(30,30,40)
+trollCategory.BorderSizePixel = 0
+trollCategory.Text = "TROLL"
+trollCategory.TextColor3 = Color3.new(1,1,1)
+trollCategory.Font = Enum.Font.Gotham
+
+-- Content frames
+local espContent = Instance.new("ScrollingFrame", frame)
+espContent.Size = UDim2.new(1, -20, 1, -120)
+espContent.Position = UDim2.new(0, 10, 0, 110)
+espContent.BackgroundColor3 = Color3.fromRGB(20,20,25)
+espContent.BorderSizePixel = 0
+espContent.ScrollBarThickness = 4
+espContent.Visible = true
+
+local trollContent = Instance.new("ScrollingFrame", frame)
+trollContent.Size = UDim2.new(1, -20, 1, -120)
+trollContent.Position = UDim2.new(0, 10, 0, 110)
+trollContent.BackgroundColor3 = Color3.fromRGB(20,20,25)
+trollContent.BorderSizePixel = 0
+trollContent.ScrollBarThickness = 4
+trollContent.Visible = false
+
+local function makeModernButton(text, parent, yPos)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(1, -10, 0, 35)
+    btn.Position = UDim2.new(0, 5, 0, yPos)
+    btn.BackgroundColor3 = Color3.fromRGB(35,35,45)
+    btn.BorderSizePixel = 0
     btn.Text = text
-    btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
     btn.TextColor3 = Color3.new(1,1,1)
+    btn.Font = Enum.Font.Gotham
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Hover effect
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(45,45,55)
+    end)
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundColor3 = Color3.fromRGB(35,35,45)
+    end)
+    
     return btn
 end
 
--- Buttons
-local espToggle = makeButton("ESP: OFF", 10)
-local xrayToggle = makeButton("X-Ray: OFF", 50)
-local nameToggle = makeButton("Names: OFF", 90)
-local healthToggle = makeButton("Healthbars: OFF", 130)
+-- ESP Buttons
+local espToggle = makeModernButton("🔍 ESP: OFF", espContent, 10)
+local xrayToggle = makeModernButton("💀 X-Ray: OFF", espContent, 55)
+local nameToggle = makeModernButton("📝 Names: OFF", espContent, 100)
+
+-- Trolling Buttons
+local followToggle = makeModernButton("👥 Follow Player: OFF", trollContent, 10)
+local targetLabel = makeModernButton("Target: None", trollContent, 55)
+targetLabel.TextColor3 = Color3.fromRGB(150,150,150)
 
 -- States
 local ESP_ENABLED = false
 local XRAY = false
 local SHOW_NAMES = false
-local SHOW_HEALTH = false
+local FOLLOWING = false
+local TARGET_PLAYER = nil
 
--- Menu is always visible
+-- Category switching
+espCategory.MouseButton1Click:Connect(function()
+    espContent.Visible = true
+    trollContent.Visible = false
+    espCategory.BackgroundColor3 = Color3.fromRGB(40,40,50)
+    trollCategory.BackgroundColor3 = Color3.fromRGB(30,30,40)
+end)
+
+trollCategory.MouseButton1Click:Connect(function()
+    espContent.Visible = false
+    trollContent.Visible = true
+    trollCategory.BackgroundColor3 = Color3.fromRGB(40,40,50)
+    espCategory.BackgroundColor3 = Color3.fromRGB(30,30,40)
+end)
 
 -- ESP FUNCTIONS
 local function applyESP(character, plr)
@@ -84,112 +182,6 @@ local function applyESP(character, plr)
             if billboard then billboard:Destroy() end
         end
     end
-
-    -- Health bar
-    if SHOW_HEALTH and ESP_ENABLED then
-        local humanoid = character:FindFirstChild("Humanoid")
-        local head = character:FindFirstChild("Head")
-
-        if humanoid and head then
-            local bar = head:FindFirstChild("HealthBar")
-            if not bar then
-                bar = Instance.new("BillboardGui", head)
-                bar.Name = "HealthBar"
-                bar.Size = UDim2.new(0,6,0,60)
-                bar.StudsOffset = Vector3.new(0,3.5,0)
-                bar.AlwaysOnTop = true
-
-                -- Background track
-                local bg = Instance.new("Frame", bar)
-                bg.Name = "Background"
-                bg.Size = UDim2.new(1,0,1,0)
-                bg.BackgroundColor3 = Color3.new(0.1,0.1,0.1)
-                bg.BorderSizePixel = 0
-                bg.Position = UDim2.new(0,0,0,0)
-                
-                -- Health bar with rounded corners effect
-                local hp = Instance.new("Frame", bg)
-                hp.Name = "HP"
-                hp.Size = UDim2.new(1,0,1,0)
-                hp.BackgroundColor3 = Color3.new(0,1,0)
-                hp.BorderSizePixel = 0
-                hp.Position = UDim2.new(0,0,1,0)
-                hp.AnchorPoint = Vector2.new(0,1)
-
-                -- Glow effect (outer frame)
-                local glow = Instance.new("Frame", bg)
-                glow.Name = "Glow"
-                glow.Size = UDim2.new(1.2,0,1,0)
-                glow.BackgroundColor3 = Color3.new(0,0,0)
-                glow.BackgroundTransparency = 0.8
-                glow.BorderSizePixel = 0
-                glow.Position = UDim2.new(-0.1,0,0,0)
-                glow.ZIndex = hp.ZIndex - 1
-
-                -- Health text
-                local text = Instance.new("TextLabel", bg)
-                text.Name = "HealthText"
-                text.Size = UDim2.new(1,0,0,12)
-                text.Position = UDim2.new(0,0,-0.2,0)
-                text.BackgroundTransparency = 1
-                text.TextColor3 = Color3.new(1,1,1)
-                text.TextStrokeTransparency = 0.3
-                text.TextStrokeColor3 = Color3.new(0,0,0)
-                text.Font = Enum.Font.SourceSansBold
-                text.TextSize = 10
-                text.Text = "100/100"
-                text.ZIndex = hp.ZIndex + 1
-
-                -- Smooth animation
-                local tweenService = game:GetService("TweenService")
-                local lastHealth = humanoid.Health
-
-                RunService.RenderStepped:Connect(function()
-                    if humanoid and humanoid.Parent and hp and hp.Parent then
-                        local healthPercent = humanoid.Health / humanoid.MaxHealth
-                        local currentHealth = math.floor(humanoid.Health)
-                        local maxHealth = math.floor(humanoid.MaxHealth)
-                        
-                        -- Update health text
-                        if text then
-                            text.Text = currentHealth .. "/" .. maxHealth
-                        end
-                        
-                        -- Gradient colors based on health
-                        local healthColor
-                        if healthPercent > 0.6 then
-                            healthColor = Color3.new(0,1,0) -- Green
-                        elseif healthPercent > 0.3 then
-                            healthColor = Color3.new(1,1,0) -- Yellow
-                        else
-                            healthColor = Color3.new(1,0,0) -- Red
-                        end
-                        
-                        -- Smooth color transition
-                        local colorTween = tweenService:Create(hp, TweenInfo.new(0.3), {BackgroundColor3 = healthColor})
-                        colorTween:Play()
-                        
-                        -- Smooth size animation
-                        local targetSize = math.clamp(healthPercent, 0, 1)
-                        local sizeTween = tweenService:Create(hp, TweenInfo.new(0.2), {Size = UDim2.new(1,0, targetSize, 0)})
-                        sizeTween:Play()
-                        
-                        -- Update glow color to match health
-                        if glow then
-                            glow.BackgroundColor3 = healthColor
-                            glow.BackgroundTransparency = 0.9 - (healthPercent * 0.3) -- More visible when low health
-                        end
-                    end
-                end)
-            end
-        end
-    else
-        local head = character:FindFirstChild("Head")
-        if head then
-            local bar = head:FindFirstChild("HealthBar")
-            if bar then bar:Destroy() end
-        end
-    end
 end
 
 -- Loop through players
@@ -201,29 +193,91 @@ local function updateESP()
     end
 end
 
+-- Follow player function
+local followConnection
+local function startFollowing(target)
+    if FOLLOWING and followConnection then
+        followConnection:Disconnect()
+        followConnection = nil
+    end
+    
+    FOLLOWING = true
+    TARGET_PLAYER = target
+    targetLabel.Text = "Target: " .. target.Name
+    followToggle.Text = "👥 Follow Player: ON"
+    
+    followConnection = RunService.Heartbeat:Connect(function()
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                local targetPos = target.Character.HumanoidRootPart.Position + Vector3.new(0, 0, 3)
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPos)
+            end
+        else
+            -- Target left/disconnected
+            FOLLOWING = false
+            TARGET_PLAYER = nil
+            targetLabel.Text = "Target: None"
+            followToggle.Text = "👥 Follow Player: OFF"
+            if followConnection then
+                followConnection:Disconnect()
+                followConnection = nil
+            end
+        end
+    end)
+end
+
+local function stopFollowing()
+    if followConnection then
+        followConnection:Disconnect()
+        followConnection = nil
+    end
+    FOLLOWING = false
+    TARGET_PLAYER = nil
+    targetLabel.Text = "Target: None"
+    followToggle.Text = "👥 Follow Player: OFF"
+end
+
 -- Button logic
 espToggle.MouseButton1Click:Connect(function()
     ESP_ENABLED = not ESP_ENABLED
-    espToggle.Text = "ESP: " .. (ESP_ENABLED and "ON" or "OFF")
+    espToggle.Text = "🔍 ESP: " .. (ESP_ENABLED and "ON" or "OFF")
     updateESP()
 end)
 
 xrayToggle.MouseButton1Click:Connect(function()
     XRAY = not XRAY
-    xrayToggle.Text = "X-Ray: " .. (XRAY and "ON" or "OFF")
+    xrayToggle.Text = "💀 X-Ray: " .. (XRAY and "ON" or "OFF")
     updateESP()
 end)
 
 nameToggle.MouseButton1Click:Connect(function()
     SHOW_NAMES = not SHOW_NAMES
-    nameToggle.Text = "Names: " .. (SHOW_NAMES and "ON" or "OFF")
+    nameToggle.Text = "📝 Names: " .. (SHOW_NAMES and "ON" or "OFF")
     updateESP()
 end)
 
-healthToggle.MouseButton1Click:Connect(function()
-    SHOW_HEALTH = not SHOW_HEALTH
-    healthToggle.Text = "Healthbars: " .. (SHOW_HEALTH and "ON" or "OFF")
-    updateESP()
+followToggle.MouseButton1Click:Connect(function()
+    if FOLLOWING then
+        stopFollowing()
+    else
+        -- Find closest player to follow
+        local closestPlayer = nil
+        local closestDistance = math.huge
+        
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (player.Character.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                if distance < closestDistance then
+                    closestDistance = distance
+                    closestPlayer = plr
+                end
+            end
+        end
+        
+        if closestPlayer then
+            startFollowing(closestPlayer)
+        end
+    end
 end)
 
 -- Auto apply when players spawn
