@@ -249,6 +249,8 @@ end)
 
 -- Triggerbot functionality
 local triggerbotConnection
+local currentTarget = nil
+
 local function startTriggerbot()
     if TRIGGERBOT_ENABLED and triggerbotConnection then
         triggerbotConnection:Disconnect()
@@ -258,12 +260,43 @@ local function startTriggerbot()
     TRIGGERBOT_ENABLED = true
     triggerbotToggle.Text = "TriggerBot: ON"
     
-    triggerbotConnection = UserInputService.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+    triggerbotConnection = RunService.Heartbeat:Connect(function()
+        -- Find closest player to crosshair
+        local closestPlayer = nil
+        local closestDistance = math.huge
+        local camera = workspace.CurrentCamera
+        
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                -- Check if player is in front of camera (crosshair)
+                local character = plr.Character
+                local head = character:FindFirstChild("Head")
+                if head then
+                    local screenPos = camera:WorldToScreenPoint(head.Position)
+                    local mousePos = UserInputService:GetMouseLocation()
+                    
+                    -- Check if player is near crosshair (within 100 pixels)
+                    local distance = (screenPos - mousePos).Magnitude
+                    if distance < 100 then
+                        local charDistance = (camera.CFrame.Position - character.HumanoidRootPart.Position).Magnitude
+                        if charDistance < closestDistance and charDistance < 200 then -- Max range 200 studs
+                            closestDistance = charDistance
+                            closestPlayer = plr
+                        end
+                    end
+                end
+            end
+        end
+        
+        -- Auto-fire when target is in crosshair
+        if closestPlayer and closestPlayer ~= currentTarget then
+            currentTarget = closestPlayer
             if player.Character and player.Character:FindFirstChild("Humanoid") then
                 player.Character:FindFirstChild("Humanoid"):Activate()
                 task.wait(TRIGGER_DELAY / 1000)
             end
+        elseif not closestPlayer then
+            currentTarget = nil
         end
     end)
 end
@@ -275,6 +308,7 @@ local function stopTriggerbot()
     end
     TRIGGERBOT_ENABLED = false
     triggerbotToggle.Text = "TriggerBot: OFF"
+    currentTarget = nil
 end
 
 -- States
