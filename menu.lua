@@ -182,6 +182,96 @@ combatContent.ScrollBarThickness = 8
 combatContent.Visible = false
 combatContent.CanvasSize = UDim2.new(0, 0, 0, 200)
 
+-- Settings inputs
+local rangeInput = Instance.new("TextBox", combatContent)
+rangeInput.Size = UDim2.new(0, 80, 0, 30)
+rangeInput.Position = UDim2.new(0, 10, 0, 120)
+rangeInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
+rangeInput.BackgroundTransparency = 0.2
+rangeInput.BorderSizePixel = 1
+rangeInput.BorderColor3 = Color3.fromRGB(255, 80, 0)
+rangeInput.Text = "200"
+rangeInput.TextColor3 = Color3.fromRGB(255, 200, 100)
+rangeInput.Font = Enum.Font.SourceSans
+rangeInput.TextSize = 14
+rangeInput.PlaceholderText = "Range"
+
+local accuracyInput = Instance.new("TextBox", combatContent)
+accuracyInput.Size = UDim2.new(0, 80, 0, 30)
+accuracyInput.Position = UDim2.new(0, 10, 0, 175)
+accuracyInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
+accuracyInput.BackgroundTransparency = 0.2
+accuracyInput.BorderSizePixel = 1
+accuracyInput.BorderColor3 = Color3.fromRGB(255, 80, 0)
+accuracyInput.Text = "80"
+accuracyInput.TextColor3 = Color3.fromRGB(255, 200, 100)
+accuracyInput.Font = Enum.Font.SourceSans
+accuracyInput.TextSize = 14
+accuracyInput.PlaceholderText = "Hit %"
+
+local bloomInput = Instance.new("TextBox", combatContent)
+bloomInput.Size = UDim2.new(0, 80, 0, 30)
+bloomInput.Position = UDim2.new(0, 10, 0, 230)
+bloomInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
+bloomInput.BackgroundTransparency = 0.2
+bloomInput.BorderSizePixel = 1
+bloomInput.BorderColor3 = Color3.fromRGB(255, 80, 0)
+bloomInput.Text = "0.1"
+bloomInput.TextColor3 = Color3.fromRGB(255, 200, 100)
+bloomInput.Font = Enum.Font.SourceSans
+bloomInput.TextSize = 14
+bloomInput.PlaceholderText = "Bloom"
+
+local targetDropdown = Instance.new("TextButton", combatContent)
+targetDropdown.Size = UDim2.new(0, 120, 0, 30)
+targetDropdown.Position = UDim2.new(0, 10, 0, 285)
+targetDropdown.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
+targetDropdown.BackgroundTransparency = 0.2
+targetDropdown.BorderSizePixel = 1
+targetDropdown.BorderColor3 = Color3.fromRGB(255, 80, 0)
+targetDropdown.Text = "Head"
+targetDropdown.TextColor3 = Color3.fromRGB(255, 200, 100)
+targetDropdown.Font = Enum.Font.SourceSans
+targetDropdown.TextSize = 14
+
+-- Update settings when inputs change
+rangeInput.FocusLost:Connect(function()
+    local newRange = tonumber(rangeInput.Text)
+    if newRange and newRange >= 0 and newRange <= 1000 then
+        AIMBOT_RANGE = newRange
+        rangeLabel.Text = "Range: " .. newRange .. " studs"
+    end
+end)
+
+accuracyInput.FocusLost:Connect(function()
+    local newAccuracy = tonumber(accuracyInput.Text)
+    if newAccuracy and newAccuracy >= 0 and newAccuracy <= 100 then
+        HIT_CHANCE = newAccuracy
+        accuracyLabel.Text = "Hit Chance: " .. newAccuracy .. "%"
+    end
+end)
+
+bloomInput.FocusLost:Connect(function()
+    local newBloom = tonumber(bloomInput.Text)
+    if newBloom and newBloom >= 0 and newBloom <= 5 then
+        BLOOM_AMOUNT = newBloom
+        bloomLabel.Text = "Bloom: " .. newBloom
+    end
+end)
+
+-- Target part dropdown
+local targetOptions = {"Head", "Torso", "Random"}
+local currentTargetIndex = 1
+
+targetDropdown.MouseButton1Click:Connect(function()
+    currentTargetIndex = (currentTargetIndex % #targetOptions) + 1
+    local selectedTarget = targetOptions[currentTargetIndex]
+    TARGET_PART = selectedTarget
+    targetDropdown.Text = selectedTarget
+    targetLabel.Text = "Target: " .. selectedTarget
+end)
+
+-- Combat Buttons
 local function makeModernButton(text, parent, yPos)
     local btn = Instance.new("TextButton", parent)
     btn.Size = UDim2.new(1, -10, 0, 40)
@@ -216,106 +306,19 @@ local nameToggle = makeModernButton("Names: OFF", espContent, 120)
 
 -- Trolling Buttons
 local followToggle = makeModernButton("Follow Player: OFF", trollContent, 10)
-local targetLabel = makeModernButton("Target: None", trollContent, 65)
-targetLabel.TextColor3 = Color3.fromRGB(150,150,150)
+local followTargetLabel = makeModernButton("Target: None", trollContent, 65)
+followTargetLabel.TextColor3 = Color3.fromRGB(150,150,150)
 
 -- Combat Buttons
-local triggerbotToggle = makeModernButton("TriggerBot: OFF", combatContent, 10)
-local delayLabel = makeModernButton("Delay: 50ms", combatContent, 65)
-delayLabel.TextColor3 = Color3.fromRGB(200,200,200)
-
--- Delay input
-local delayInput = Instance.new("TextBox", combatContent)
-delayInput.Size = UDim2.new(0, 80, 0, 30)
-delayInput.Position = UDim2.new(0, 10, 0, 170)
-delayInput.Position = UDim2.new(0, 10, 0, 120)
-delayInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
-delayInput.BackgroundTransparency = 0.2
-delayInput.BorderSizePixel = 1
-delayInput.BorderColor3 = Color3.fromRGB(255, 80, 0)
-delayInput.Text = "50"
-delayInput.TextColor3 = Color3.fromRGB(255, 200, 100)
-delayInput.Font = Enum.Font.SourceSans
-delayInput.TextSize = 14
-delayInput.PlaceholderText = "Delay (ms)"
-
--- Update delay when input changes
-delayInput.FocusLost:Connect(function()
-    local newDelay = tonumber(delayInput.Text)
-    if newDelay and newDelay >= 0 and newDelay <= 1000 then
-        TRIGGER_DELAY = newDelay
-        delayLabel.Text = "Delay: " .. newDelay .. "ms"
-    end
-end)
-
--- Triggerbot functionality
-local triggerbotConnection
-local currentTarget = nil
-
-local function startTriggerbot()
-    if TRIGGERBOT_ENABLED and triggerbotConnection then
-        triggerbotConnection:Disconnect()
-        triggerbotConnection = nil
-    
-TRIGGERBOT_ENABLED = true
-triggerbotToggle.Text = "TriggerBot: ON"
-    
-triggerbotConnection = RunService.Heartbeat:Connect(function()
--- Find closest player to crosshair
-local closestPlayer = nil
-local closestDistance = math.huge
-local camera = workspace.CurrentCamera
-local mousePos = UserInputService:GetMouseLocation()
-        
-for _, plr in pairs(Players:GetPlayers()) do
-if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
--- Check if this player is in crosshair area
-local character = plr.Character
-local head = character:FindFirstChild("Head")
-if head then
-local screenPos = camera:WorldToScreenPoint(head.Position)
-local distance = (screenPos - mousePos).Magnitude
-                
--- If player is in crosshair area and closer than previous target
-if distance < 30 then -- Crosshair radius of 30 pixels
-local charDistance = (camera.CFrame.Position - character.HumanoidRootPart.Position).Magnitude
-if charDistance < closestDistance and charDistance < 200 then -- Max range 200 studs
-closestDistance = charDistance
-closestPlayer = plr
-end
-end
-end
-end
-end
-        
--- Auto-fire when target is in crosshair
-if closestPlayer then
-currentTarget = closestPlayer
-if player.Character and player.Character:FindFirstChild("Humanoid") then
-player.Character:FindFirstChild("Humanoid"):Activate()
-task.wait(TRIGGER_DELAY / 1000)
-end
-else
-currentTarget = nil
-end
-end)
-end
-
-local function stopTriggerbot()
-if triggerbotConnection then
-triggerbotConnection:Disconnect()
-triggerbotConnection = nil
-end
-TRIGGERBOT_ENABLED = false
-triggerbotToggle.Text = "TriggerBot: OFF"
-currentTarget = nil
-        triggerbotConnection:Disconnect()
-        triggerbotConnection = nil
-    end
-    TRIGGERBOT_ENABLED = false
-    triggerbotToggle.Text = "TriggerBot: OFF"
-    currentTarget = nil
-end
+local aimbotToggle = makeModernButton("Aimbot: OFF", combatContent, 10)
+local rangeLabel = makeModernButton("Range: 200 studs", combatContent, 65)
+rangeLabel.TextColor3 = Color3.fromRGB(200,200,200)
+local accuracyLabel = makeModernButton("Hit Chance: 80%", combatContent, 120)
+accuracyLabel.TextColor3 = Color3.fromRGB(200,200,200)
+local bloomLabel = makeModernButton("Bloom: 0.1", combatContent, 175)
+bloomLabel.TextColor3 = Color3.fromRGB(200,200,200)
+local targetLabel = makeModernButton("Target: Head", combatContent, 230)
+targetLabel.TextColor3 = Color3.fromRGB(200,200,200)
 
 -- States
 local ESP_ENABLED = false
@@ -323,8 +326,115 @@ local XRAY = false
 local SHOW_NAMES = false
 local FOLLOWING = false
 local TARGET_PLAYER = nil
-local TRIGGERBOT_ENABLED = false
-local TRIGGER_DELAY = 50
+-- Aimbot variables
+local AIMBOT_ENABLED = false
+local AIMBOT_RANGE = 200
+local HIT_CHANCE = 80
+local BLOOM_AMOUNT = 0.1
+local TARGET_PART = "Head"
+
+-- Aimbot functionality
+local aimbotConnection
+local currentTarget = nil
+
+local function startAimbot()
+    if AIMBOT_ENABLED and aimbotConnection then
+        aimbotConnection:Disconnect()
+        aimbotConnection = nil
+    end
+    
+    AIMBOT_ENABLED = true
+    aimbotToggle.Text = "Aimbot: ON"
+    
+    aimbotConnection = UserInputService.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 and AIMBOT_ENABLED then
+            -- Find closest player
+            local closestPlayer = nil
+            local closestDistance = math.huge
+            local camera = workspace.CurrentCamera
+            
+            for _, plr in pairs(Players:GetPlayers()) do
+                if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                    local character = plr.Character
+                    local targetPart = character:FindFirstChild("HumanoidRootPart")
+                    
+                    -- Select target part
+                    if TARGET_PART == "Head" then
+                        targetPart = character:FindFirstChild("Head")
+                    elseif TARGET_PART == "Torso" then
+                        targetPart = character:FindFirstChild("HumanoidRootPart")
+                    elseif TARGET_PART == "Random" then
+                        local parts = {character:FindFirstChild("Head"), character:FindFirstChild("HumanoidRootPart"), character:FindFirstChild("LeftArm"), character:FindFirstChild("RightArm"), character:FindFirstChild("LeftLeg"), character:FindFirstChild("RightLeg")}
+                        targetPart = parts[math.random(1, #parts)]
+                    end
+                    
+                    if targetPart then
+                        local distance = (camera.CFrame.Position - targetPart.Position).Magnitude
+                        if distance < closestDistance and distance <= AIMBOT_RANGE then
+                            closestDistance = distance
+                            closestPlayer = plr
+                        end
+                    end
+                end
+            end
+            
+            -- Aim at target
+            if closestPlayer and closestPlayer.Character then
+                currentTarget = closestPlayer
+                local targetPart = closestPlayer.Character:FindFirstChild("HumanoidRootPart")
+                
+                if TARGET_PART == "Head" then
+                    targetPart = closestPlayer.Character:FindFirstChild("Head")
+                elseif TARGET_PART == "Torso" then
+                    targetPart = closestPlayer.Character:FindFirstChild("HumanoidRootPart")
+                elseif TARGET_PART == "Random" then
+                    local parts = {closestPlayer.Character:FindFirstChild("Head"), closestPlayer.Character:FindFirstChild("HumanoidRootPart"), closestPlayer.Character:FindFirstChild("LeftArm"), closestPlayer.Character:FindFirstChild("RightArm"), closestPlayer.Character:FindFirstChild("LeftLeg"), closestPlayer.Character:FindFirstChild("RightLeg")}
+                    targetPart = parts[math.random(1, #parts)]
+                end
+                
+                if targetPart and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                    -- Apply hit chance
+                    if math.random(1, 100) <= HIT_CHANCE then
+                        -- Aim directly at target
+                        local targetCFrame = CFrame.new(player.Character.HumanoidRootPart.Position, targetPart.Position)
+                        player.Character.HumanoidRootPart.CFrame = targetCFrame
+                    else
+                        -- Apply bloom (miss)
+                        if BLOOM_AMOUNT > 0 then
+                            local randomOffset = Vector3.new(
+                                (math.random() - 0.5) * BLOOM_AMOUNT * 10,
+                                (math.random() - 0.5) * BLOOM_AMOUNT * 10,
+                                (math.random() - 0.5) * BLOOM_AMOUNT * 10
+                            )
+                            local targetCFrame = CFrame.new(player.Character.HumanoidRootPart.Position, targetPart.Position + randomOffset)
+                            player.Character.HumanoidRootPart.CFrame = targetCFrame
+                        end
+                    end
+                end
+            else
+                currentTarget = nil
+            end
+        end
+    end)
+end
+
+local function stopAimbot()
+    if aimbotConnection then
+        aimbotConnection:Disconnect()
+        aimbotConnection = nil
+    end
+    AIMBOT_ENABLED = false
+    aimbotToggle.Text = "Aimbot: OFF"
+    currentTarget = nil
+end
+
+aimbotToggle.MouseButton1Click:Connect(function()
+    if AIMBOT_ENABLED then
+        stopAimbot()
+    else
+        startAimbot()
+    end
+end)
 
 -- Category switching
 espCategory.MouseButton1Click:Connect(function()
@@ -419,7 +529,7 @@ local function startFollowing(target)
     
     FOLLOWING = true
     TARGET_PLAYER = target
-    targetLabel.Text = "Target: " .. target.Name
+    followTargetLabel.Text = "Target: " .. target.Name
     followToggle.Text = "Follow Player: ON"
     
     followConnection = RunService.Heartbeat:Connect(function()
@@ -432,7 +542,7 @@ local function startFollowing(target)
             -- Target left/disconnected
             FOLLOWING = false
             TARGET_PLAYER = nil
-            targetLabel.Text = "Target: None"
+            followTargetLabel.Text = "Target: None"
             followToggle.Text = "Follow Player: OFF"
             if followConnection then
                 followConnection:Disconnect()
@@ -449,7 +559,7 @@ local function stopFollowing()
     end
     FOLLOWING = false
     TARGET_PLAYER = nil
-    targetLabel.Text = "Target: None"
+    followTargetLabel.Text = "Target: None"
     followToggle.Text = "Follow Player: OFF"
 end
 
@@ -493,14 +603,6 @@ followToggle.MouseButton1Click:Connect(function()
         if closestPlayer then
             startFollowing(closestPlayer)
         end
-    end
-end)
-
-triggerbotToggle.MouseButton1Click:Connect(function()
-    if TRIGGERBOT_ENABLED then
-        stopTriggerbot()
-    else
-        startTriggerbot()
     end
 end)
 
