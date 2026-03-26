@@ -115,6 +115,18 @@ espCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
 espCategory.Font = Enum.Font.SourceSansBold
 espCategory.TextSize = 18
 
+local movementCategory = Instance.new("TextButton", sidebar)
+movementCategory.Size = UDim2.new(1, -20, 0, 50)
+movementCategory.Position = UDim2.new(0, 10, 0, 80)
+movementCategory.BackgroundColor3 = Color3.fromRGB(40, 20, 0)
+movementCategory.BackgroundTransparency = 0.2
+movementCategory.BorderSizePixel = 1
+movementCategory.BorderColor3 = Color3.fromRGB(255, 100, 0)
+movementCategory.Text = "Movement"
+movementCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
+movementCategory.Font = Enum.Font.SourceSansBold
+movementCategory.TextSize = 18
+
 -- Content area
 local contentFrame = Instance.new("Frame", frame)
 contentFrame.Size = UDim2.new(0, 420, 1, -40)
@@ -135,6 +147,17 @@ espContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
 espContent.ScrollBarThickness = 8
 espContent.Visible = true
 espContent.CanvasSize = UDim2.new(0, 0, 0, 230)
+
+local movementContent = Instance.new("ScrollingFrame", contentFrame)
+movementContent.Size = UDim2.new(1, -20, 1, -20)
+movementContent.Position = UDim2.new(0, 10, 0, 10)
+movementContent.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
+movementContent.BackgroundTransparency = 0.2
+movementContent.BorderSizePixel = 1
+movementContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
+movementContent.ScrollBarThickness = 8
+movementContent.Visible = false
+movementContent.CanvasSize = UDim2.new(0, 0, 0, 120)
 
 -- ESP Buttons
 local function makeModernButton(text, parent, yPos)
@@ -168,10 +191,13 @@ local espToggle = makeModernButton("ESP: OFF", espContent, 10)
 local xrayToggle = makeModernButton("X-Ray: OFF", espContent, 65)
 local nameToggle = makeModernButton("Names: OFF", espContent, 120)
 
+local noclipToggle = makeModernButton("Noclip: OFF", movementContent, 10)
+
 -- States
 local ESP_ENABLED = false
 local XRAY = false
 local SHOW_NAMES = false
+local NOCLIP = false
 
 -- Team color mapping for Prison Life
 local TEAM_COLORS = {
@@ -370,3 +396,90 @@ end)
 
 -- Initial update
 updateESP()
+
+-- Category switching functionality
+local function switchCategory(category)
+    espContent.Visible = false
+    movementContent.Visible = false
+    
+    if category == "esp" then
+        espContent.Visible = true
+        espCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
+        movementCategory.BackgroundColor3 = Color3.fromRGB(40, 20, 0)
+    elseif category == "movement" then
+        movementContent.Visible = true
+        movementCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
+        espCategory.BackgroundColor3 = Color3.fromRGB(40, 20, 0)
+    end
+end
+
+-- Category button click handlers
+espCategory.MouseButton1Click:Connect(function()
+    switchCategory("esp")
+end)
+
+movementCategory.MouseButton1Click:Connect(function()
+    switchCategory("movement")
+end)
+
+-- Noclip functionality
+local noclipConnection = nil
+
+local function enableNoclip()
+    if noclipConnection then noclipConnection:Disconnect() end
+    
+    noclipConnection = RunService.Stepped:Connect(function()
+        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") and part.CanCollide == true then
+                    part.CanCollide = false
+                end
+            end
+        end
+    end)
+end
+
+local function disableNoclip()
+    if noclipConnection then
+        noclipConnection:Disconnect()
+        noclipConnection = nil
+        
+        -- Restore collision for character parts
+        if player.Character then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
+        end
+    end
+end
+
+-- Noclip button handler
+noclipToggle.MouseButton1Click:Connect(function()
+    NOCLIP = not NOCLIP
+    noclipToggle.Text = "Noclip: " .. (NOCLIP and "ON" or "OFF")
+    
+    if NOCLIP then
+        enableNoclip()
+    else
+        disableNoclip()
+    end
+end)
+
+-- Clean up noclip when character dies
+player.CharacterRemoving:Connect(function()
+    if NOCLIP then
+        disableNoclip()
+        NOCLIP = false
+        noclipToggle.Text = "Noclip: OFF"
+    end
+end)
+
+-- Re-enable noclip when character respawns if it was active
+player.CharacterAdded:Connect(function()
+    task.wait(1)
+    if NOCLIP then
+        enableNoclip()
+    end
+end)
