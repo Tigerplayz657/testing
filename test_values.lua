@@ -10,8 +10,8 @@ ESP.Enabled = true
 ESP.Objects = {}
 
 function ESP:GetColor(player)
-    -- Check if player has 💢 in their name
-    if player.Name:find("💢") then
+    -- Check if player has 💢 in their DisplayName or Name
+    if player.DisplayName:find("💢") or player.Name:find("💢") then
         return Color3.new(1, 0, 0) -- Red
     else
         return Color3.new(0, 1, 0) -- Green (default)
