@@ -20,6 +20,75 @@ frame.BorderSizePixel = 1
 frame.BorderColor3 = Color3.fromRGB(255, 140, 0)
 frame.Visible = true
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.Active = true
+
+-- Close button
+local closeButton = Instance.new("TextButton", frame)
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -35, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.BackgroundTransparency = 0.2
+closeButton.BorderSizePixel = 1
+closeButton.BorderColor3 = Color3.fromRGB(255, 100, 0)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextSize = 16
+closeButton.ZIndex = 10
+
+-- Reopen button (hidden initially)
+local reopenButton = Instance.new("TextButton", screenGui)
+reopenButton.Size = UDim2.new(0, 100, 0, 30)
+reopenButton.Position = UDim2.new(1, -110, 0, 10)
+reopenButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+reopenButton.BackgroundTransparency = 0.2
+reopenButton.BorderSizePixel = 1
+reopenButton.BorderColor3 = Color3.fromRGB(255, 100, 0)
+reopenButton.Text = "Open Menu"
+reopenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+reopenButton.Font = Enum.Font.SourceSansBold
+reopenButton.TextSize = 14
+reopenButton.Visible = false
+reopenButton.ZIndex = 10
+
+-- Dragging variables
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+-- Drag functionality
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+    end
+end)
+
+frame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+-- Close button functionality
+closeButton.MouseButton1Click:Connect(function()
+    frame.Visible = false
+    reopenButton.Visible = true
+end)
+
+-- Reopen button functionality
+reopenButton.MouseButton1Click:Connect(function()
+    frame.Visible = true
+    reopenButton.Visible = false
+end)
 
 -- Left sidebar for categories
 local sidebar = Instance.new("Frame", frame)
