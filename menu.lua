@@ -68,6 +68,7 @@ espContent.BorderSizePixel = 1
 espContent.BorderColor3 = Color3.fromRGB(70, 70, 90)
 espContent.ScrollBarThickness = 8
 espContent.Visible = true
+espContent.CanvasSize = UDim2.new(0, 0, 0, 200)
 
 local trollContent = Instance.new("ScrollingFrame", contentFrame)
 trollContent.Size = UDim2.new(1, -20, 1, -20)
@@ -77,6 +78,7 @@ trollContent.BorderSizePixel = 1
 trollContent.BorderColor3 = Color3.fromRGB(70, 70, 90)
 trollContent.ScrollBarThickness = 8
 trollContent.Visible = false
+trollContent.CanvasSize = UDim2.new(0, 0, 0, 150)
 
 -- ESP Buttons
 local espToggle = makeModernButton("ESP: OFF", espContent, 10)
