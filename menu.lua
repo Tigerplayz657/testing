@@ -14,9 +14,10 @@ screenGui.ResetOnSpawn = false
 local frame = Instance.new("Frame", screenGui)
 frame.Size = UDim2.new(0, 600, 0, 350)
 frame.Position = UDim2.new(0.5, -300, 0.5, -175)
-frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BackgroundTransparency = 0.3
 frame.BorderSizePixel = 1
-frame.BorderColor3 = Color3.fromRGB(100, 100, 120)
+frame.BorderColor3 = Color3.fromRGB(255, 140, 0)
 frame.Visible = true
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 
@@ -24,30 +25,33 @@ frame.AnchorPoint = Vector2.new(0.5, 0.5)
 local sidebar = Instance.new("Frame", frame)
 sidebar.Size = UDim2.new(0, 150, 1, -40)
 sidebar.Position = UDim2.new(0, 10, 0, 30)
-sidebar.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+sidebar.BackgroundColor3 = Color3.fromRGB(20, 10, 0)
+sidebar.BackgroundTransparency = 0.2
 sidebar.BorderSizePixel = 1
-sidebar.BorderColor3 = Color3.fromRGB(80, 80, 100)
+sidebar.BorderColor3 = Color3.fromRGB(255, 120, 0)
 
 -- Category buttons in sidebar
 local espCategory = Instance.new("TextButton", sidebar)
 espCategory.Size = UDim2.new(1, -20, 0, 50)
 espCategory.Position = UDim2.new(0, 10, 0, 20)
-espCategory.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+espCategory.BackgroundColor3 = Color3.fromRGB(40, 20, 0)
+espCategory.BackgroundTransparency = 0.2
 espCategory.BorderSizePixel = 1
-espCategory.BorderColor3 = Color3.fromRGB(120, 120, 140)
+espCategory.BorderColor3 = Color3.fromRGB(255, 100, 0)
 espCategory.Text = "ESP"
-espCategory.TextColor3 = Color3.new(1,1,1)
+espCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
 espCategory.Font = Enum.Font.SourceSansBold
 espCategory.TextSize = 18
 
 local trollCategory = Instance.new("TextButton", sidebar)
 trollCategory.Size = UDim2.new(1, -20, 0, 50)
 trollCategory.Position = UDim2.new(0, 10, 0, 80)
-trollCategory.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+trollCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
+trollCategory.BackgroundTransparency = 0.2
 trollCategory.BorderSizePixel = 1
-trollCategory.BorderColor3 = Color3.fromRGB(100, 100, 120)
+trollCategory.BorderColor3 = Color3.fromRGB(255, 100, 0)
 trollCategory.Text = "TROLL"
-trollCategory.TextColor3 = Color3.new(1,1,1)
+trollCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
 trollCategory.Font = Enum.Font.SourceSansBold
 trollCategory.TextSize = 18
 
@@ -55,17 +59,19 @@ trollCategory.TextSize = 18
 local contentFrame = Instance.new("Frame", frame)
 contentFrame.Size = UDim2.new(0, 420, 1, -40)
 contentFrame.Position = UDim2.new(0, 170, 0, 30)
-contentFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+contentFrame.BackgroundColor3 = Color3.fromRGB(15, 8, 0)
+contentFrame.BackgroundTransparency = 0.2
 contentFrame.BorderSizePixel = 1
-contentFrame.BorderColor3 = Color3.fromRGB(90, 90, 110)
+contentFrame.BorderColor3 = Color3.fromRGB(255, 80, 0)
 
 -- Content frames
 local espContent = Instance.new("ScrollingFrame", contentFrame)
 espContent.Size = UDim2.new(1, -20, 1, -20)
 espContent.Position = UDim2.new(0, 10, 0, 10)
-espContent.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+espContent.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
+espContent.BackgroundTransparency = 0.2
 espContent.BorderSizePixel = 1
-espContent.BorderColor3 = Color3.fromRGB(70, 70, 90)
+espContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
 espContent.ScrollBarThickness = 8
 espContent.Visible = true
 espContent.CanvasSize = UDim2.new(0, 0, 0, 200)
@@ -73,9 +79,10 @@ espContent.CanvasSize = UDim2.new(0, 0, 0, 200)
 local trollContent = Instance.new("ScrollingFrame", contentFrame)
 trollContent.Size = UDim2.new(1, -20, 1, -20)
 trollContent.Position = UDim2.new(0, 10, 0, 10)
-trollContent.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+trollContent.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
+trollContent.BackgroundTransparency = 0.2
 trollContent.BorderSizePixel = 1
-trollContent.BorderColor3 = Color3.fromRGB(70, 70, 90)
+trollContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
 trollContent.ScrollBarThickness = 8
 trollContent.Visible = false
 trollContent.CanvasSize = UDim2.new(0, 0, 0, 150)
@@ -84,21 +91,24 @@ local function makeModernButton(text, parent, yPos)
     local btn = Instance.new("TextButton", parent)
     btn.Size = UDim2.new(1, -10, 0, 40)
     btn.Position = UDim2.new(0, 5, 0, yPos)
-    btn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+    btn.BackgroundColor3 = Color3.fromRGB(35, 18, 0)
+    btn.BackgroundTransparency = 0.2
     btn.BorderSizePixel = 1
-    btn.BorderColor3 = Color3.fromRGB(100, 100, 120)
+    btn.BorderColor3 = Color3.fromRGB(255, 40, 0)
     btn.Text = text
-    btn.TextColor3 = Color3.new(1,1,1)
+    btn.TextColor3 = Color3.fromRGB(255, 180, 80)
     btn.Font = Enum.Font.SourceSans
     btn.TextSize = 14
     btn.TextXAlignment = Enum.TextXAlignment.Left
     
     -- Hover effect
     btn.MouseEnter:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+        btn.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
+        btn.BackgroundTransparency = 0.1
     end)
     btn.MouseLeave:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
+        btn.BackgroundColor3 = Color3.fromRGB(35, 18, 0)
+        btn.BackgroundTransparency = 0.2
     end)
     
     return btn
@@ -125,15 +135,15 @@ local TARGET_PLAYER = nil
 espCategory.MouseButton1Click:Connect(function()
     espContent.Visible = true
     trollContent.Visible = false
-    espCategory.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
-    trollCategory.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+    espCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
+    trollCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
 end)
 
 trollCategory.MouseButton1Click:Connect(function()
     espContent.Visible = false
     trollContent.Visible = true
-    trollCategory.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
-    espCategory.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+    trollCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
+    espCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
 end)
 
 -- ESP FUNCTIONS
