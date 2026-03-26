@@ -10,133 +10,81 @@ screenGui.Parent = player:FindFirstChildOfClass("PlayerGui") or player:WaitForCh
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.ResetOnSpawn = false
 
--- Main frame with glass morphism design
+-- Main frame
 local frame = Instance.new("Frame", screenGui)
 frame.Size = UDim2.new(0, 600, 0, 350)
 frame.Position = UDim2.new(0.5, -300, 0.5, -175)
-frame.BackgroundColor3 = Color3.fromRGB(10, 10, 15)
-frame.BorderSizePixel = 0
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+frame.BorderSizePixel = 1
+frame.BorderColor3 = Color3.fromRGB(100, 100, 120)
 frame.Visible = true
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 
--- Add corner rounding
-local corner = Instance.new("UICorner", frame)
-corner.CornerRadius = UDim.new(0, 15)
-
--- Add glass effect
-local glass = Instance.new("Frame", frame)
-glass.Size = UDim2.new(1, 0, 1, 0)
-glass.Position = UDim2.new(0, 0, 0, 0)
-glass.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-glass.BackgroundTransparency = 0.95
-glass.BorderSizePixel = 0
-glass.ZIndex = 1
-
-local glassCorner = Instance.new("UICorner", glass)
-glassCorner.CornerRadius = UDim.new(0, 15)
-
 -- Left sidebar for categories
 local sidebar = Instance.new("Frame", frame)
-sidebar.Size = UDim2.new(0, 150, 1, -60)
-sidebar.Position = UDim2.new(0, 20, 0, 50)
-sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-sidebar.BorderSizePixel = 0
-sidebar.ZIndex = 2
-
-local sidebarCorner = Instance.new("UICorner", sidebar)
-sidebarCorner.CornerRadius = UDim.new(0, 10)
-
--- Title bar
-local titleBar = Instance.new("Frame", frame)
-titleBar.Size = UDim2.new(1, -40, 0, 50)
-titleBar.Position = UDim2.new(0, 20, 0, 10)
-titleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
-titleBar.BorderSizePixel = 0
-titleBar.ZIndex = 2
-
-local titleCorner = Instance.new("UICorner", titleBar)
-titleCorner.CornerRadius = UDim.new(0, 10)
-
-local title = Instance.new("TextLabel", titleBar)
-title.Size = UDim2.new(1, 0, 1, 0)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.BackgroundTransparency = 1
-title.Text = "⚡ XENU ⚡"
-title.TextColor3 = Color3.fromRGB(255, 100, 255)
-title.TextScaled = true
-title.Font = Enum.Font.GothamBold
-title.ZIndex = 3
+sidebar.Size = UDim2.new(0, 150, 1, -40)
+sidebar.Position = UDim2.new(0, 10, 0, 30)
+sidebar.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+sidebar.BorderSizePixel = 1
+sidebar.BorderColor3 = Color3.fromRGB(80, 80, 100)
 
 -- Category buttons in sidebar
 local espCategory = Instance.new("TextButton", sidebar)
-espCategory.Size = UDim2.new(1, -20, 0, 40)
+espCategory.Size = UDim2.new(1, -20, 0, 50)
 espCategory.Position = UDim2.new(0, 10, 0, 20)
-espCategory.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
-espCategory.BorderSizePixel = 0
-espCategory.Text = "🔍 ESP"
+espCategory.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+espCategory.BorderSizePixel = 1
+espCategory.BorderColor3 = Color3.fromRGB(120, 120, 140)
+espCategory.Text = "ESP"
 espCategory.TextColor3 = Color3.new(1,1,1)
-espCategory.Font = Enum.Font.GothamBold
-espCategory.ZIndex = 3
-
-local espCorner = Instance.new("UICorner", espCategory)
-espCorner.CornerRadius = UDim.new(0, 8)
+espCategory.Font = Enum.Font.SourceSansBold
+espCategory.TextSize = 18
 
 local trollCategory = Instance.new("TextButton", sidebar)
-trollCategory.Size = UDim2.new(1, -20, 0, 40)
-trollCategory.Position = UDim2.new(0, 10, 0, 70)
-trollCategory.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
-trollCategory.BorderSizePixel = 0
-trollCategory.Text = "🎭 TROLL"
+trollCategory.Size = UDim2.new(1, -20, 0, 50)
+trollCategory.Position = UDim2.new(0, 10, 0, 80)
+trollCategory.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+trollCategory.BorderSizePixel = 1
+trollCategory.BorderColor3 = Color3.fromRGB(100, 100, 120)
+trollCategory.Text = "TROLL"
 trollCategory.TextColor3 = Color3.new(1,1,1)
-trollCategory.Font = Enum.Font.Gotham
-trollCategory.ZIndex = 3
-
-local trollCorner = Instance.new("UICorner", trollCategory)
-trollCorner.CornerRadius = UDim.new(0, 8)
+trollCategory.Font = Enum.Font.SourceSansBold
+trollCategory.TextSize = 18
 
 -- Content area
 local contentFrame = Instance.new("Frame", frame)
-contentFrame.Size = UDim2.new(0, 380, 1, -60)
-contentFrame.Position = UDim2.new(0, 180, 0, 50)
-contentFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
-contentFrame.BorderSizePixel = 0
-contentFrame.ZIndex = 2
-
-local contentCorner = Instance.new("UICorner", contentFrame)
-contentCorner.CornerRadius = UDim.new(0, 10)
+contentFrame.Size = UDim2.new(0, 420, 1, -40)
+contentFrame.Position = UDim2.new(0, 170, 0, 30)
+contentFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+contentFrame.BorderSizePixel = 1
+contentFrame.BorderColor3 = Color3.fromRGB(90, 90, 110)
 
 -- Content frames
 local espContent = Instance.new("ScrollingFrame", contentFrame)
 espContent.Size = UDim2.new(1, -20, 1, -20)
 espContent.Position = UDim2.new(0, 10, 0, 10)
-espContent.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-espContent.BorderSizePixel = 0
-espContent.ScrollBarThickness = 6
+espContent.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+espContent.BorderSizePixel = 1
+espContent.BorderColor3 = Color3.fromRGB(70, 70, 90)
+espContent.ScrollBarThickness = 8
 espContent.Visible = true
-espContent.ZIndex = 3
-
-local espContentCorner = Instance.new("UICorner", espContent)
-espContentCorner.CornerRadius = UDim.new(0, 8)
 
 local trollContent = Instance.new("ScrollingFrame", contentFrame)
 trollContent.Size = UDim2.new(1, -20, 1, -20)
 trollContent.Position = UDim2.new(0, 10, 0, 10)
-trollContent.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-trollContent.BorderSizePixel = 0
-trollContent.ScrollBarThickness = 6
+trollContent.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+trollContent.BorderSizePixel = 1
+trollContent.BorderColor3 = Color3.fromRGB(70, 70, 90)
+trollContent.ScrollBarThickness = 8
 trollContent.Visible = false
-trollContent.ZIndex = 3
-
-local trollContentCorner = Instance.new("UICorner", trollContent)
-trollContentCorner.CornerRadius = UDim.new(0, 8)
 
 -- ESP Buttons
-local espToggle = makeModernButton("🔍 ESP: OFF", espContent, 10)
-local xrayToggle = makeModernButton("💀 X-Ray: OFF", espContent, 65)
-local nameToggle = makeModernButton("📝 Names: OFF", espContent, 120)
+local espToggle = makeModernButton("ESP: OFF", espContent, 10)
+local xrayToggle = makeModernButton("X-Ray: OFF", espContent, 65)
+local nameToggle = makeModernButton("Names: OFF", espContent, 120)
 
 -- Trolling Buttons
-local followToggle = makeModernButton("👥 Follow Player: OFF", trollContent, 10)
+local followToggle = makeModernButton("Follow Player: OFF", trollContent, 10)
 local targetLabel = makeModernButton("Target: None", trollContent, 65)
 targetLabel.TextColor3 = Color3.fromRGB(150,150,150)
 
@@ -151,15 +99,15 @@ local TARGET_PLAYER = nil
 espCategory.MouseButton1Click:Connect(function()
     espContent.Visible = true
     trollContent.Visible = false
-    espCategory.BackgroundColor3 = Color3.fromRGB(40,40,50)
-    trollCategory.BackgroundColor3 = Color3.fromRGB(30,30,40)
+    espCategory.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    trollCategory.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
 end)
 
 trollCategory.MouseButton1Click:Connect(function()
     espContent.Visible = false
     trollContent.Visible = true
-    trollCategory.BackgroundColor3 = Color3.fromRGB(40,40,50)
-    espCategory.BackgroundColor3 = Color3.fromRGB(30,30,40)
+    trollCategory.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    espCategory.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
 end)
 
 -- ESP FUNCTIONS
@@ -228,7 +176,7 @@ local function startFollowing(target)
     FOLLOWING = true
     TARGET_PLAYER = target
     targetLabel.Text = "Target: " .. target.Name
-    followToggle.Text = "👥 Follow Player: ON"
+    followToggle.Text = "Follow Player: ON"
     
     followConnection = RunService.Heartbeat:Connect(function()
         if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
@@ -241,7 +189,7 @@ local function startFollowing(target)
             FOLLOWING = false
             TARGET_PLAYER = nil
             targetLabel.Text = "Target: None"
-            followToggle.Text = "👥 Follow Player: OFF"
+            followToggle.Text = "Follow Player: OFF"
             if followConnection then
                 followConnection:Disconnect()
                 followConnection = nil
@@ -258,25 +206,25 @@ local function stopFollowing()
     FOLLOWING = false
     TARGET_PLAYER = nil
     targetLabel.Text = "Target: None"
-    followToggle.Text = "👥 Follow Player: OFF"
+    followToggle.Text = "Follow Player: OFF"
 end
 
 -- Button logic
 espToggle.MouseButton1Click:Connect(function()
     ESP_ENABLED = not ESP_ENABLED
-    espToggle.Text = "🔍 ESP: " .. (ESP_ENABLED and "ON" or "OFF")
+    espToggle.Text = "ESP: " .. (ESP_ENABLED and "ON" or "OFF")
     updateESP()
 end)
 
 xrayToggle.MouseButton1Click:Connect(function()
     XRAY = not XRAY
-    xrayToggle.Text = "💀 X-Ray: " .. (XRAY and "ON" or "OFF")
+    xrayToggle.Text = "X-Ray: " .. (XRAY and "ON" or "OFF")
     updateESP()
 end)
 
 nameToggle.MouseButton1Click:Connect(function()
     SHOW_NAMES = not SHOW_NAMES
-    nameToggle.Text = "📝 Names: " .. (SHOW_NAMES and "ON" or "OFF")
+    nameToggle.Text = "Names: " .. (SHOW_NAMES and "ON" or "OFF")
     updateESP()
 end)
 
