@@ -234,8 +234,16 @@ local TEAM_COLORS = {
 -- Get team color for a player
 local function getTeamColor(plr)
     local team = plr.Team
-    if team and TEAM_COLORS[team.Name] then
-        return TEAM_COLORS[team.Name]
+    if team then
+        print("Player:", plr.Name, "Team:", team.Name)
+        if TEAM_COLORS[team.Name] then
+            print("Found color for team:", team.Name)
+            return TEAM_COLORS[team.Name]
+        else
+            print("No color found for team:", team.Name, "- using default white")
+        end
+    else
+        print("Player:", plr.Name, "has no team")
     end
     return Color3.fromRGB(255, 255, 255) -- Default white
 end
