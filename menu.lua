@@ -354,9 +354,10 @@ local function startAimbot()
                 return
             end
             
-            -- Find closest player
+            -- Find closest player and store target part
             local closestPlayer = nil
             local closestDistance = math.huge
+            local storedTargetPart = nil
             local camera = workspace.CurrentCamera
             local myPosition = player.Character.HumanoidRootPart.Position
             
@@ -386,38 +387,28 @@ local function startAimbot()
                         if distance < closestDistance and distance <= AIMBOT_RANGE then
                             closestDistance = distance
                             closestPlayer = plr
+                            storedTargetPart = targetPart
                         end
                     end
                 end
             end
             
-            -- Aim at target
-            if closestPlayer and closestPlayer.Character then
+            -- Aim at target using camera instead of CFrame manipulation
+            if closestPlayer and closestPlayer.Character and storedTargetPart then
                 currentTarget = closestPlayer
-                local targetPart = nil
                 
-                -- Select target part for aiming
-                if TARGET_PART == "Head" then
-                    targetPart = closestPlayer.Character:FindFirstChild("Head")
-                elseif TARGET_PART == "Torso" then
-                    targetPart = closestPlayer.Character:FindFirstChild("HumanoidRootPart")
-                elseif TARGET_PART == "Random" then
-                    local parts = {closestPlayer.Character:FindFirstChild("Head"), closestPlayer.Character:FindFirstChild("HumanoidRootPart"), closestPlayer.Character:FindFirstChild("LeftArm"), closestPlayer.Character:FindFirstChild("RightArm"), closestPlayer.Character:FindFirstChild("LeftLeg"), closestPlayer.Character:FindFirstChild("RightLeg")}
-                    local validParts = {}
-                    for _, part in pairs(parts) do
-                        if part then table.insert(validParts, part) end
-                    end
-                    if #validParts > 0 then
-                        targetPart = validParts[math.random(1, #validParts)]
-                    end
-                end
-                
-                if targetPart and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and camera then
                     -- Apply hit chance
                     if math.random(1, 100) <= HIT_CHANCE then
-                        -- Aim directly at target
-                        local targetCFrame = CFrame.new(player.Character.HumanoidRootPart.Position, targetPart.Position)
-                        player.Character.HumanoidRootPart.CFrame = targetCFrame
+                        -- Aim directly at target using camera
+                        local targetPosition = storedTargetPart.Position
+                        local lookAtCFrame = CFrame.new(camera.CFrame.Position, targetPosition)
+                        
+                        -- Smooth aiming to avoid detection
+                        local currentCFrame = camera.CFrame
+                        local targetCFrame = currentCFrame:Lerp(lookAtCFrame, 0.3) -- 30% smoothing
+                        camera.CFrame = targetCFrame
+                        
                         -- Visual feedback: flash aimbot button
                         aimbotToggle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
                         task.wait(0.1)
@@ -430,8 +421,14 @@ local function startAimbot()
                                 (math.random() - 0.5) * BLOOM_AMOUNT * 10,
                                 (math.random() - 0.5) * BLOOM_AMOUNT * 10
                             )
-                            local targetCFrame = CFrame.new(player.Character.HumanoidRootPart.Position, targetPart.Position + randomOffset)
-                            player.Character.HumanoidRootPart.CFrame = targetCFrame
+                            local targetPosition = storedTargetPart.Position + randomOffset
+                            local lookAtCFrame = CFrame.new(camera.CFrame.Position, targetPosition)
+                            
+                            -- Smooth aiming with bloom
+                            local currentCFrame = camera.CFrame
+                            local targetCFrame = currentCFrame:Lerp(lookAtCFrame, 0.3)
+                            camera.CFrame = targetCFrame
+                            
                             -- Visual feedback: flash aimbot button
                             aimbotToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
                             task.wait(0.1)
