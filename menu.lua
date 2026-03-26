@@ -24,17 +24,20 @@ frame.Active = true
 
 -- Close button
 local closeButton = Instance.new("TextButton", frame)
-closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Position = UDim2.new(1, -35, 0, 5)
-closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-closeButton.BackgroundTransparency = 0.2
-closeButton.BorderSizePixel = 1
+closeButton.Size = UDim2.new(0, 35, 0, 35)
+closeButton.Position = UDim2.new(1, -40, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+closeButton.BackgroundTransparency = 0.1
+closeButton.BorderSizePixel = 2
 closeButton.BorderColor3 = Color3.fromRGB(255, 100, 0)
-closeButton.Text = "X"
+closeButton.Text = "✕"
 closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 closeButton.Font = Enum.Font.SourceSansBold
-closeButton.TextSize = 16
+closeButton.TextSize = 18
 closeButton.ZIndex = 10
+
+local closeCorner = Instance.new("UICorner", closeButton)
+closeCorner.CornerRadius = UDim.new(0, 8)
 
 -- Reopen button (hidden initially)
 local reopenButton = Instance.new("TextButton", screenGui)
@@ -124,6 +127,18 @@ trollCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
 trollCategory.Font = Enum.Font.SourceSansBold
 trollCategory.TextSize = 18
 
+local combatCategory = Instance.new("TextButton", sidebar)
+combatCategory.Size = UDim2.new(1, -20, 0, 50)
+combatCategory.Position = UDim2.new(0, 10, 0, 140)
+combatCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
+combatCategory.BackgroundTransparency = 0.2
+combatCategory.BorderSizePixel = 1
+combatCategory.BorderColor3 = Color3.fromRGB(255, 100, 0)
+combatCategory.Text = "COMBAT"
+combatCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
+combatCategory.Font = Enum.Font.SourceSansBold
+combatCategory.TextSize = 18
+
 -- Content area
 local contentFrame = Instance.new("Frame", frame)
 contentFrame.Size = UDim2.new(0, 420, 1, -40)
@@ -155,6 +170,17 @@ trollContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
 trollContent.ScrollBarThickness = 8
 trollContent.Visible = false
 trollContent.CanvasSize = UDim2.new(0, 0, 0, 150)
+
+local combatContent = Instance.new("ScrollingFrame", contentFrame)
+combatContent.Size = UDim2.new(1, -20, 1, -20)
+combatContent.Position = UDim2.new(0, 10, 0, 10)
+combatContent.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
+combatContent.BackgroundTransparency = 0.2
+combatContent.BorderSizePixel = 1
+combatContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
+combatContent.ScrollBarThickness = 8
+combatContent.Visible = false
+combatContent.CanvasSize = UDim2.new(0, 0, 0, 200)
 
 local function makeModernButton(text, parent, yPos)
     local btn = Instance.new("TextButton", parent)
@@ -193,26 +219,99 @@ local followToggle = makeModernButton("Follow Player: OFF", trollContent, 10)
 local targetLabel = makeModernButton("Target: None", trollContent, 65)
 targetLabel.TextColor3 = Color3.fromRGB(150,150,150)
 
+-- Combat Buttons
+local triggerbotToggle = makeModernButton("TriggerBot: OFF", combatContent, 10)
+local delayLabel = makeModernButton("Delay: 50ms", combatContent, 65)
+delayLabel.TextColor3 = Color3.fromRGB(200,200,200)
+
+-- Delay input
+local delayInput = Instance.new("TextBox", combatContent)
+delayInput.Size = UDim2.new(0, 80, 0, 30)
+delayInput.Position = UDim2.new(0, 10, 0, 120)
+delayInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
+delayInput.BackgroundTransparency = 0.2
+delayInput.BorderSizePixel = 1
+delayInput.BorderColor3 = Color3.fromRGB(255, 80, 0)
+delayInput.Text = "50"
+delayInput.TextColor3 = Color3.fromRGB(255, 200, 100)
+delayInput.Font = Enum.Font.SourceSans
+delayInput.TextSize = 14
+delayInput.PlaceholderText = "Delay (ms)"
+
+-- Update delay when input changes
+delayInput.FocusLost:Connect(function()
+    local newDelay = tonumber(delayInput.Text)
+    if newDelay and newDelay >= 0 and newDelay <= 1000 then
+        TRIGGER_DELAY = newDelay
+        delayLabel.Text = "Delay: " .. newDelay .. "ms"
+    end
+end)
+
+-- Triggerbot functionality
+local triggerbotConnection
+local function startTriggerbot()
+    if TRIGGERBOT_ENABLED and triggerbotConnection then
+        triggerbotConnection:Disconnect()
+        triggerbotConnection = nil
+    end
+    
+    TRIGGERBOT_ENABLED = true
+    triggerbotToggle.Text = "TriggerBot: ON"
+    
+    triggerbotConnection = UserInputService.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                player.Character:FindFirstChild("Humanoid"):Activate()
+                task.wait(TRIGGER_DELAY / 1000)
+            end
+        end
+    end)
+end
+
+local function stopTriggerbot()
+    if triggerbotConnection then
+        triggerbotConnection:Disconnect()
+        triggerbotConnection = nil
+    end
+    TRIGGERBOT_ENABLED = false
+    triggerbotToggle.Text = "TriggerBot: OFF"
+end
+
 -- States
 local ESP_ENABLED = false
 local XRAY = false
 local SHOW_NAMES = false
 local FOLLOWING = false
 local TARGET_PLAYER = nil
+local TRIGGERBOT_ENABLED = false
+local TRIGGER_DELAY = 50
 
 -- Category switching
 espCategory.MouseButton1Click:Connect(function()
     espContent.Visible = true
     trollContent.Visible = false
+    combatContent.Visible = false
     espCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
     trollCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
+    combatCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
 end)
 
 trollCategory.MouseButton1Click:Connect(function()
     espContent.Visible = false
     trollContent.Visible = true
+    combatContent.Visible = false
     trollCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
     espCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
+    combatCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
+end)
+
+combatCategory.MouseButton1Click:Connect(function()
+    espContent.Visible = false
+    trollContent.Visible = false
+    combatContent.Visible = true
+    combatCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
+    espCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
+    trollCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
 end)
 
 -- ESP FUNCTIONS
@@ -354,6 +453,14 @@ followToggle.MouseButton1Click:Connect(function()
         if closestPlayer then
             startFollowing(closestPlayer)
         end
+    end
+end)
+
+triggerbotToggle.MouseButton1Click:Connect(function()
+    if TRIGGERBOT_ENABLED then
+        stopTriggerbot()
+    else
+        startTriggerbot()
     end
 end)
 
