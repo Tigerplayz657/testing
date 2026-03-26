@@ -115,18 +115,6 @@ espCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
 espCategory.Font = Enum.Font.SourceSansBold
 espCategory.TextSize = 18
 
-local combatCategory = Instance.new("TextButton", sidebar)
-combatCategory.Size = UDim2.new(1, -20, 0, 50)
-combatCategory.Position = UDim2.new(0, 10, 0, 80)
-combatCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
-combatCategory.BackgroundTransparency = 0.2
-combatCategory.BorderSizePixel = 1
-combatCategory.BorderColor3 = Color3.fromRGB(255, 100, 0)
-combatCategory.Text = "COMBAT"
-combatCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
-combatCategory.Font = Enum.Font.SourceSansBold
-combatCategory.TextSize = 18
-
 -- Content area
 local contentFrame = Instance.new("Frame", frame)
 contentFrame.Size = UDim2.new(0, 420, 1, -40)
@@ -148,18 +136,7 @@ espContent.ScrollBarThickness = 8
 espContent.Visible = true
 espContent.CanvasSize = UDim2.new(0, 0, 0, 230)
 
-local combatContent = Instance.new("ScrollingFrame", contentFrame)
-combatContent.Size = UDim2.new(1, -20, 1, -20)
-combatContent.Position = UDim2.new(0, 10, 0, 10)
-combatContent.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
-combatContent.BackgroundTransparency = 0.2
-combatContent.BorderSizePixel = 1
-combatContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
-combatContent.ScrollBarThickness = 8
-combatContent.Visible = false
-combatContent.CanvasSize = UDim2.new(0, 0, 0, 350)
-
--- Combat Buttons
+-- ESP Buttons
 local function makeModernButton(text, parent, yPos)
     local btn = Instance.new("TextButton", parent)
     btn.Size = UDim2.new(0, 200, 0, 40)
@@ -187,41 +164,14 @@ local function makeModernButton(text, parent, yPos)
     return btn
 end
 
--- ESP Buttons
 local espToggle = makeModernButton("ESP: OFF", espContent, 10)
 local xrayToggle = makeModernButton("X-Ray: OFF", espContent, 65)
 local nameToggle = makeModernButton("Names: OFF", espContent, 120)
-local teamDetectBtn = makeModernButton("Detect Teams", espContent, 175)
-
--- Combat Buttons
-local rangeLabel = makeModernButton("Range: 200 studs", combatContent, 10)
-rangeLabel.TextColor3 = Color3.fromRGB(200,200,200)
-local accuracyLabel = makeModernButton("Hit Chance: 80%", combatContent, 65)
-accuracyLabel.TextColor3 = Color3.fromRGB(200,200,200)
-local bloomLabel = makeModernButton("Bloom: 0.1", combatContent, 120)
-bloomLabel.TextColor3 = Color3.fromRGB(200,200,200)
-local targetLabel = makeModernButton("Target: Head", combatContent, 175)
-targetLabel.TextColor3 = Color3.fromRGB(200,200,200)
 
 -- States
 local ESP_ENABLED = false
 local XRAY = false
 local SHOW_NAMES = false
-
--- Category switching
-espCategory.MouseButton1Click:Connect(function()
-    espContent.Visible = true
-    combatContent.Visible = false
-    espCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
-    combatCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
-end)
-
-combatCategory.MouseButton1Click:Connect(function()
-    espContent.Visible = false
-    combatContent.Visible = true
-    combatCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
-    espCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
-end)
 
 -- Team color mapping for Prison Life
 local TEAM_COLORS = {
@@ -235,15 +185,9 @@ local TEAM_COLORS = {
 local function getTeamColor(plr)
     local team = plr.Team
     if team then
-        print("Player:", plr.Name, "Team:", team.Name)
         if TEAM_COLORS[team.Name] then
-            print("Found color for team:", team.Name)
             return TEAM_COLORS[team.Name]
-        else
-            print("No color found for team:", team.Name, "- using default white")
         end
-    else
-        print("Player:", plr.Name, "has no team")
     end
     return Color3.fromRGB(255, 255, 255) -- Default white
 end
@@ -332,26 +276,21 @@ nameToggle.MouseButton1Click:Connect(function()
     updateESP()
 end)
 
--- Team detection button
-teamDetectBtn.MouseButton1Click:Connect(function()
-    local teamInfo = "=== TEAMS DETECTED ===\n"
-    local foundTeams = {}
+-- Clean up ESP for a character
+local function cleanupESP(character)
+    if not character then return end
     
-    for _, plr in pairs(Players:GetPlayers()) do
-        if plr.Team and not foundTeams[plr.Team.Name] then
-            foundTeams[plr.Team.Name] = true
-            teamInfo = teamInfo .. plr.Team.Name .. "\n"
-        end
+    -- Remove highlight
+    local highlight = character:FindFirstChild("Highlight")
+    if highlight then highlight:Destroy() end
+    
+    -- Remove name tag
+    local head = character:FindFirstChild("Head")
+    if head then
+        local billboard = head:FindFirstChild("NameTag")
+        if billboard then billboard:Destroy() end
     end
-    
-    -- Print to console for debugging
-    print(teamInfo)
-    
-    -- Also show in a notification if possible
-    local hint = Instance.new("Hint", workspace)
-    hint.Text = "Team names printed to console (F9)"
-    game:GetService("Debris"):AddItem(hint, 3)
-end)
+end
 
 -- Auto apply when players spawn
 Players.PlayerAdded:Connect(function(plr)
@@ -364,6 +303,18 @@ Players.PlayerAdded:Connect(function(plr)
             applyESP(char, plr)
         end
     end)
+    
+    -- Clean up when player dies (character removing)
+    plr.CharacterRemoving:Connect(function(char)
+        cleanupESP(char)
+    end)
+end)
+
+-- Clean up when player leaves
+Players.PlayerRemoving:Connect(function(plr)
+    if plr.Character then
+        cleanupESP(plr.Character)
+    end
 end)
 
 -- Initial update
