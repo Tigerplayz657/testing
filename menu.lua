@@ -307,6 +307,12 @@ Players.PlayerAdded:Connect(function(plr)
     -- Clean up when player dies (character removing)
     plr.CharacterRemoving:Connect(function(char)
         cleanupESP(char)
+        -- Force reapply ESP after a short delay to catch respawn
+        task.delay(1, function()
+            if plr and plr.Character then
+                applyESP(plr.Character, plr)
+            end
+        end)
     end)
     
     -- Update ESP when player changes teams
