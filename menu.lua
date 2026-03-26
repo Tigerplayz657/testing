@@ -307,8 +307,8 @@ Players.PlayerAdded:Connect(function(plr)
     -- Clean up when player dies (character removing)
     plr.CharacterRemoving:Connect(function(char)
         cleanupESP(char)
-        -- Force reapply ESP after a short delay to catch respawn
-        task.delay(1, function()
+        -- Force reapply ESP after 5 seconds to catch respawn
+        task.delay(5, function()
             if plr and plr.Character then
                 applyESP(plr.Character, plr)
             end
