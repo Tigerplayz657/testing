@@ -418,6 +418,10 @@ local function startAimbot()
                         -- Aim directly at target
                         local targetCFrame = CFrame.new(player.Character.HumanoidRootPart.Position, targetPart.Position)
                         player.Character.HumanoidRootPart.CFrame = targetCFrame
+                        -- Visual feedback: flash aimbot button
+                        aimbotToggle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+                        task.wait(0.1)
+                        aimbotToggle.BackgroundColor3 = Color3.fromRGB(35, 18, 0)
                     else
                         -- Apply bloom (miss)
                         if BLOOM_AMOUNT > 0 then
@@ -428,6 +432,10 @@ local function startAimbot()
                             )
                             local targetCFrame = CFrame.new(player.Character.HumanoidRootPart.Position, targetPart.Position + randomOffset)
                             player.Character.HumanoidRootPart.CFrame = targetCFrame
+                            -- Visual feedback: flash aimbot button
+                            aimbotToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+                            task.wait(0.1)
+                            aimbotToggle.BackgroundColor3 = Color3.fromRGB(35, 18, 0)
                         end
                     end
                 end
