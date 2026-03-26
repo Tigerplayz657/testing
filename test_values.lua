@@ -19,6 +19,13 @@ local function scanPlayerValues(plr)
                 print("Char." .. child.Name .. ": " .. tostring(child.Value) .. " (" .. child.ClassName .. ")")
             end
         end
+        
+        -- Also scan all descendants (might be nested)
+        for _, child in pairs(plr.Character:GetDescendants()) do
+            if child:IsA("ValueBase") and not child:IsDescendantOf(plr.Character) then
+                print("Descendant." .. child:GetFullName() .. ": " .. tostring(child.Value) .. " (" .. child.ClassName .. ")")
+            end
+        end
     end
     
     -- Scan backpack for weapon-related values
@@ -27,6 +34,22 @@ local function scanPlayerValues(plr)
         for _, child in pairs(backpack:GetChildren()) do
             if child:IsA("ValueBase") then
                 print("Backpack." .. child.Name .. ": " .. tostring(child.Value) .. " (" .. child.ClassName .. ")")
+            end
+        end
+    end
+    
+    -- Check for common arrestable properties directly
+    print("--- Common Properties ---")
+    print("Team:", plr.Team and plr.Team.Name or "No Team")
+    print("Neutral:", plr.Neutral)
+    print("CharacterExists:", plr.Character ~= nil)
+    
+    -- Check for leaderstats
+    local leaderstats = plr:FindFirstChild("leaderstats")
+    if leaderstats then
+        for _, stat in pairs(leaderstats:GetChildren()) do
+            if stat:IsA("ValueBase") then
+                print("Stat." .. stat.Name .. ": " .. tostring(stat.Value) .. " (" .. stat.ClassName .. ")")
             end
         end
     end
