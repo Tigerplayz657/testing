@@ -292,6 +292,29 @@ local function cleanupESP(character)
     end
 end
 
+-- Continuous ESP monitor to catch any players that lose ESP
+spawn(function()
+    while true do
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr ~= player and plr.Character then
+                -- Check if player has ESP elements
+                local hasHighlight = plr.Character:FindFirstChild("Highlight") ~= nil
+                local hasNameTag = false
+                local head = plr.Character:FindFirstChild("Head")
+                if head then
+                    hasNameTag = head:FindFirstChild("NameTag") ~= nil
+                end
+                
+                -- If ESP is enabled but player is missing elements, reapply
+                if ESP_ENABLED and ((XRAY and not hasHighlight) or (SHOW_NAMES and not hasNameTag)) then
+                    applyESP(plr.Character, plr)
+                end
+            end
+        end
+        task.wait(2) -- Check every 2 seconds
+    end
+end)
+
 -- Auto apply when players spawn
 Players.PlayerAdded:Connect(function(plr)
     if plr and plr.Character then
