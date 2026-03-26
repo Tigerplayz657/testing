@@ -428,10 +428,10 @@ local noclipConnection = nil
 local function enableNoclip()
     if noclipConnection then noclipConnection:Disconnect() end
     
-    noclipConnection = RunService.Stepped:Connect(function()
+    noclipConnection = game:GetService("RunService").Heartbeat:Connect(function()
         if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
             for _, part in pairs(player.Character:GetDescendants()) do
-                if part:IsA("BasePart") and part.CanCollide == true then
+                if part:IsA("BasePart") then
                     part.CanCollide = false
                 end
             end
@@ -447,7 +447,7 @@ local function disableNoclip()
         -- Restore collision for character parts
         if player.Character then
             for _, part in pairs(player.Character:GetDescendants()) do
-                if part:IsA("BasePart") then
+                if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
                     part.CanCollide = true
                 end
             end
