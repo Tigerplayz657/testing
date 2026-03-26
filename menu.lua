@@ -184,8 +184,8 @@ combatContent.CanvasSize = UDim2.new(0, 0, 0, 350)
 
 -- Settings inputs
 local rangeInput = Instance.new("TextBox", combatContent)
-rangeInput.Size = UDim2.new(0, 100, 0, 25)
-rangeInput.Position = UDim2.new(0, 250, 0, 75)
+rangeInput.Size = UDim2.new(0, 120, 0, 30)
+rangeInput.Position = UDim2.new(0, 220, 0, 75)
 rangeInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
 rangeInput.BackgroundTransparency = 0.2
 rangeInput.BorderSizePixel = 1
@@ -197,8 +197,8 @@ rangeInput.TextSize = 14
 rangeInput.PlaceholderText = "Range"
 
 local accuracyInput = Instance.new("TextBox", combatContent)
-accuracyInput.Size = UDim2.new(0, 100, 0, 25)
-accuracyInput.Position = UDim2.new(0, 250, 0, 130)
+accuracyInput.Size = UDim2.new(0, 120, 0, 30)
+accuracyInput.Position = UDim2.new(0, 220, 0, 130)
 accuracyInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
 accuracyInput.BackgroundTransparency = 0.2
 accuracyInput.BorderSizePixel = 1
@@ -210,8 +210,8 @@ accuracyInput.TextSize = 14
 accuracyInput.PlaceholderText = "Hit %"
 
 local bloomInput = Instance.new("TextBox", combatContent)
-bloomInput.Size = UDim2.new(0, 100, 0, 25)
-bloomInput.Position = UDim2.new(0, 250, 0, 185)
+bloomInput.Size = UDim2.new(0, 120, 0, 30)
+bloomInput.Position = UDim2.new(0, 220, 0, 185)
 bloomInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
 bloomInput.BackgroundTransparency = 0.2
 bloomInput.BorderSizePixel = 1
@@ -223,8 +223,8 @@ bloomInput.TextSize = 14
 bloomInput.PlaceholderText = "Bloom"
 
 local targetDropdown = Instance.new("TextButton", combatContent)
-targetDropdown.Size = UDim2.new(0, 100, 0, 25)
-targetDropdown.Position = UDim2.new(0, 250, 0, 240)
+targetDropdown.Size = UDim2.new(0, 120, 0, 30)
+targetDropdown.Position = UDim2.new(0, 220, 0, 240)
 targetDropdown.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
 targetDropdown.BackgroundTransparency = 0.2
 targetDropdown.BorderSizePixel = 1
@@ -274,7 +274,7 @@ end)
 -- Combat Buttons
 local function makeModernButton(text, parent, yPos)
     local btn = Instance.new("TextButton", parent)
-    btn.Size = UDim2.new(1, -10, 0, 40)
+    btn.Size = UDim2.new(0, 200, 0, 40)
     btn.Position = UDim2.new(0, 5, 0, yPos)
     btn.BackgroundColor3 = Color3.fromRGB(35, 18, 0)
     btn.BackgroundTransparency = 0.2
