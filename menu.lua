@@ -308,6 +308,13 @@ Players.PlayerAdded:Connect(function(plr)
     plr.CharacterRemoving:Connect(function(char)
         cleanupESP(char)
     end)
+    
+    -- Update ESP when player changes teams
+    plr:GetPropertyChangedSignal("Team"):Connect(function()
+        if plr.Character then
+            applyESP(plr.Character, plr)
+        end
+    end)
 end)
 
 -- Clean up when player leaves
