@@ -10,10 +10,22 @@ ESP.Enabled = true
 ESP.Objects = {}
 
 function ESP:GetColor(player)
+    -- Debug: Print the actual name values
+    print("Player Name: '" .. player.Name .. "'")
+    print("Player DisplayName: '" .. player.DisplayName .. "'")
+    
     -- Check if player has 💢 in their DisplayName or Name
-    if player.DisplayName:find("💢") or player.Name:find("💢") then
+    local hasEmojiInName = player.Name:find("💢") ~= nil
+    local hasEmojiInDisplayName = player.DisplayName:find("💢") ~= nil
+    
+    print("Has 💢 in Name: " .. tostring(hasEmojiInName))
+    print("Has 💢 in DisplayName: " .. tostring(hasEmojiInDisplayName))
+    
+    if hasEmojiInDisplayName or hasEmojiInName then
+        print("Setting RED color for: " .. player.DisplayName)
         return Color3.new(1, 0, 0) -- Red
     else
+        print("Setting GREEN color for: " .. player.DisplayName)
         return Color3.new(0, 1, 0) -- Green (default)
     end
 end
