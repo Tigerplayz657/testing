@@ -424,27 +424,15 @@ end)
 
 -- Noclip functionality
 local noclipConnection = nil
-local noclipGroupName = "NoclipGroup"
-local playerCollisionGroup = "Default"
 
 local function enableNoclip()
     if noclipConnection then noclipConnection:Disconnect() end
     
-    -- Create or get noclip collision group
-    local PhysicsService = game:GetService("PhysicsService")
-    if not PhysicsService:GetCollisionGroup(noclipGroupName) then
-        PhysicsService:CreateCollisionGroup(noclipGroupName)
-    end
-    
-    -- Set up collision groups to not collide with each other
-    PhysicsService:CollisionGroupSetCollidable(noclipGroupName, "Default", false)
-    
-    noclipConnection = game:GetService("RunService").Heartbeat:Connect(function()
+    noclipConnection = game:GetService("RunService").Stepped:Connect(function()
         if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-            -- Add all character parts to noclip group
             for _, part in pairs(player.Character:GetDescendants()) do
                 if part:IsA("BasePart") then
-                    PhysicsService:SetPartCollisionGroup(part, noclipGroupName)
+                    part.CanCollide = false
                 end
             end
         end
@@ -456,12 +444,11 @@ local function disableNoclip()
         noclipConnection:Disconnect()
         noclipConnection = nil
         
-        -- Restore collision groups for character parts
+        -- Restore collision for character parts
         if player.Character then
-            local PhysicsService = game:GetService("PhysicsService")
             for _, part in pairs(player.Character:GetDescendants()) do
                 if part:IsA("BasePart") then
-                    PhysicsService:SetPartCollisionGroup(part, playerCollisionGroup)
+                    part.CanCollide = true
                 end
             end
         end
