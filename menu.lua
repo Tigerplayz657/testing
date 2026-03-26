@@ -225,9 +225,9 @@ end)
 
 -- Team color mapping for Prison Life
 local TEAM_COLORS = {
-    ["Inmate"] = Color3.fromRGB(255, 165, 0),    -- Orange
-    ["Guard"] = Color3.fromRGB(0, 100, 255),     -- Blue  
-    ["Criminal"] = Color3.fromRGB(255, 0, 0),    -- Red
+    ["Inmates"] = Color3.fromRGB(255, 165, 0),    -- Orange
+    ["Guards"] = Color3.fromRGB(0, 100, 255),     -- Blue  
+    ["Criminals"] = Color3.fromRGB(255, 0, 0),    -- Red
     ["Neutral"] = Color3.fromRGB(128, 128, 128)  -- Gray
 }
 
