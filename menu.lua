@@ -347,10 +347,18 @@ local function startAimbot()
     
     aimbotConnection = UserInputService.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 and AIMBOT_ENABLED then
+            -- Wait a frame to ensure character exists
+            task.wait()
+            
+            if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+                return
+            end
+            
             -- Find closest player
             local closestPlayer = nil
             local closestDistance = math.huge
             local camera = workspace.CurrentCamera
+            local myPosition = player.Character.HumanoidRootPart.Position
             
             for _, plr in pairs(Players:GetPlayers()) do
                 if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
@@ -374,7 +382,7 @@ local function startAimbot()
                     end
                     
                     if targetPart then
-                        local distance = (camera.CFrame.Position - targetPart.Position).Magnitude
+                        local distance = (myPosition - targetPart.Position).Magnitude
                         if distance < closestDistance and distance <= AIMBOT_RANGE then
                             closestDistance = distance
                             closestPlayer = plr
@@ -384,7 +392,7 @@ local function startAimbot()
             end
             
             -- Aim at target
-            if closestPlayer and closestPlayer.Character and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            if closestPlayer and closestPlayer.Character then
                 currentTarget = closestPlayer
                 local targetPart = nil
                 
@@ -404,7 +412,7 @@ local function startAimbot()
                     end
                 end
                 
-                if targetPart then
+                if targetPart and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                     -- Apply hit chance
                     if math.random(1, 100) <= HIT_CHANCE then
                         -- Aim directly at target
