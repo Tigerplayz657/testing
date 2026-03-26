@@ -312,7 +312,22 @@ Players.PlayerAdded:Connect(function(plr)
     -- Update ESP when player changes teams
     plr:GetPropertyChangedSignal("Team"):Connect(function()
         if plr.Character then
+            task.wait(0.1) -- Small delay to ensure team change is processed
             applyESP(plr.Character, plr)
+        end
+    end)
+    
+    -- Also monitor team changes more frequently for arrested players
+    local currentTeam = plr.Team
+    spawn(function()
+        while plr and plr.Parent do
+            if plr.Team ~= currentTeam then
+                currentTeam = plr.Team
+                if plr.Character then
+                    applyESP(plr.Character, plr)
+                end
+            end
+            task.wait(0.5)
         end
     end)
 end)
