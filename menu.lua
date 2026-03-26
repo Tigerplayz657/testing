@@ -261,25 +261,29 @@ local function startTriggerbot()
     triggerbotToggle.Text = "TriggerBot: ON"
     
     triggerbotConnection = RunService.Heartbeat:Connect(function()
-        -- Find closest player to crosshair
+        -- Find closest player to crosshair using raycast
         local closestPlayer = nil
         local closestDistance = math.huge
         local camera = workspace.CurrentCamera
+        local mousePos = UserInputService:GetMouseLocation()
+        
+        -- Cast ray from camera through mouse position
+        local rayDirection = (mousePos - Vector2.new(camera.ViewportSize.X/2, camera.ViewportSize.Y/2)).Unit
+        local rayResult = workspace:Raycast(camera.CFrame.Position, rayDirection * 1000)
         
         for _, plr in pairs(Players:GetPlayers()) do
             if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                -- Check if player is in front of camera (crosshair)
+                -- Check if this player is in the crosshair area
                 local character = plr.Character
                 local head = character:FindFirstChild("Head")
                 if head then
                     local screenPos = camera:WorldToScreenPoint(head.Position)
-                    local mousePos = UserInputService:GetMouseLocation()
-                    
-                    -- Check if player is near crosshair (within 100 pixels)
                     local distance = (screenPos - mousePos).Magnitude
-                    if distance < 100 then
+                    
+                    -- If player is in crosshair area and closer than previous target
+                    if distance < 50 then -- Crosshair radius of 50 pixels
                         local charDistance = (camera.CFrame.Position - character.HumanoidRootPart.Position).Magnitude
-                        if charDistance < closestDistance and charDistance < 200 then -- Max range 200 studs
+                        if charDistance < closestDistance and charDistance < 300 then -- Max range 300 studs
                             closestDistance = charDistance
                             closestPlayer = plr
                         end
