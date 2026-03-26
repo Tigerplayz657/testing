@@ -221,12 +221,14 @@ targetLabel.TextColor3 = Color3.fromRGB(150,150,150)
 
 -- Combat Buttons
 local triggerbotToggle = makeModernButton("TriggerBot: OFF", combatContent, 10)
-local delayLabel = makeModernButton("Delay: 50ms", combatContent, 65)
+local stopTriggerButton = makeModernButton("STOP TriggerBot", combatContent, 65)
+local delayLabel = makeModernButton("Delay: 50ms", combatContent, 120)
 delayLabel.TextColor3 = Color3.fromRGB(200,200,200)
 
 -- Delay input
 local delayInput = Instance.new("TextBox", combatContent)
 delayInput.Size = UDim2.new(0, 80, 0, 30)
+delayInput.Position = UDim2.new(0, 10, 0, 170)
 delayInput.Position = UDim2.new(0, 10, 0, 120)
 delayInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
 delayInput.BackgroundTransparency = 0.2
@@ -255,58 +257,59 @@ local function startTriggerbot()
     if TRIGGERBOT_ENABLED and triggerbotConnection then
         triggerbotConnection:Disconnect()
         triggerbotConnection = nil
-    end
     
-    TRIGGERBOT_ENABLED = true
-    triggerbotToggle.Text = "TriggerBot: ON"
+TRIGGERBOT_ENABLED = true
+triggerbotToggle.Text = "TriggerBot: ON"
     
-    triggerbotConnection = RunService.Heartbeat:Connect(function()
-        -- Find closest player to crosshair using raycast
-        local closestPlayer = nil
-        local closestDistance = math.huge
-        local camera = workspace.CurrentCamera
-        local mousePos = UserInputService:GetMouseLocation()
+triggerbotConnection = RunService.Heartbeat:Connect(function()
+-- Find closest player to crosshair
+local closestPlayer = nil
+local closestDistance = math.huge
+local camera = workspace.CurrentCamera
+local mousePos = UserInputService:GetMouseLocation()
         
-        -- Cast ray from camera through mouse position
-        local rayDirection = (mousePos - Vector2.new(camera.ViewportSize.X/2, camera.ViewportSize.Y/2)).Unit
-        local rayResult = workspace:Raycast(camera.CFrame.Position, rayDirection * 1000)
+for _, plr in pairs(Players:GetPlayers()) do
+if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+-- Check if this player is in crosshair area
+local character = plr.Character
+local head = character:FindFirstChild("Head")
+if head then
+local screenPos = camera:WorldToScreenPoint(head.Position)
+local distance = (screenPos - mousePos).Magnitude
+                
+-- If player is in crosshair area and closer than previous target
+if distance < 30 then -- Crosshair radius of 30 pixels
+local charDistance = (camera.CFrame.Position - character.HumanoidRootPart.Position).Magnitude
+if charDistance < closestDistance and charDistance < 200 then -- Max range 200 studs
+closestDistance = charDistance
+closestPlayer = plr
+end
+end
+end
+end
+end
         
-        for _, plr in pairs(Players:GetPlayers()) do
-            if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                -- Check if this player is in the crosshair area
-                local character = plr.Character
-                local head = character:FindFirstChild("Head")
-                if head then
-                    local screenPos = camera:WorldToScreenPoint(head.Position)
-                    local distance = (screenPos - mousePos).Magnitude
-                    
-                    -- If player is in crosshair area and closer than previous target
-                    if distance < 50 then -- Crosshair radius of 50 pixels
-                        local charDistance = (camera.CFrame.Position - character.HumanoidRootPart.Position).Magnitude
-                        if charDistance < closestDistance and charDistance < 300 then -- Max range 300 studs
-                            closestDistance = charDistance
-                            closestPlayer = plr
-                        end
-                    end
-                end
-            end
-        end
-        
-        -- Auto-fire when target is in crosshair
-        if closestPlayer and closestPlayer ~= currentTarget then
-            currentTarget = closestPlayer
-            if player.Character and player.Character:FindFirstChild("Humanoid") then
-                player.Character:FindFirstChild("Humanoid"):Activate()
-                task.wait(TRIGGER_DELAY / 1000)
-            end
-        elseif not closestPlayer then
-            currentTarget = nil
-        end
-    end)
+-- Auto-fire when target is in crosshair
+if closestPlayer then
+currentTarget = closestPlayer
+if player.Character and player.Character:FindFirstChild("Humanoid") then
+player.Character:FindFirstChild("Humanoid"):Activate()
+task.wait(TRIGGER_DELAY / 1000)
+end
+else
+currentTarget = nil
+end
+end)
 end
 
 local function stopTriggerbot()
-    if triggerbotConnection then
+if triggerbotConnection then
+triggerbotConnection:Disconnect()
+triggerbotConnection = nil
+end
+TRIGGERBOT_ENABLED = false
+triggerbotToggle.Text = "TriggerBot: OFF"
+currentTarget = nil
         triggerbotConnection:Disconnect()
         triggerbotConnection = nil
     end
@@ -492,6 +495,10 @@ followToggle.MouseButton1Click:Connect(function()
             startFollowing(closestPlayer)
         end
     end
+end)
+
+stopTriggerButton.MouseButton1Click:Connect(function()
+    stopTriggerbot()
 end)
 
 triggerbotToggle.MouseButton1Click:Connect(function()
