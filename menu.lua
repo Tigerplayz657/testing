@@ -221,8 +221,7 @@ targetLabel.TextColor3 = Color3.fromRGB(150,150,150)
 
 -- Combat Buttons
 local triggerbotToggle = makeModernButton("TriggerBot: OFF", combatContent, 10)
-local stopTriggerButton = makeModernButton("STOP TriggerBot", combatContent, 65)
-local delayLabel = makeModernButton("Delay: 50ms", combatContent, 120)
+local delayLabel = makeModernButton("Delay: 50ms", combatContent, 65)
 delayLabel.TextColor3 = Color3.fromRGB(200,200,200)
 
 -- Delay input
@@ -495,10 +494,6 @@ followToggle.MouseButton1Click:Connect(function()
             startFollowing(closestPlayer)
         end
     end
-end)
-
-stopTriggerButton.MouseButton1Click:Connect(function()
-    stopTriggerbot()
 end)
 
 triggerbotToggle.MouseButton1Click:Connect(function()
