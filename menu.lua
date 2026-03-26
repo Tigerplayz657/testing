@@ -332,7 +332,6 @@ local AIMBOT_RANGE = 200
 local HIT_CHANCE = 80
 local BLOOM_AMOUNT = 0.1
 local TARGET_PART = "Head"
-
 -- Aimbot functionality
 local aimbotConnection
 local currentTarget = nil
@@ -356,7 +355,7 @@ local function startAimbot()
             for _, plr in pairs(Players:GetPlayers()) do
                 if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
                     local character = plr.Character
-                    local targetPart = character:FindFirstChild("HumanoidRootPart")
+                    local targetPart = nil
                     
                     -- Select target part
                     if TARGET_PART == "Head" then
@@ -365,7 +364,13 @@ local function startAimbot()
                         targetPart = character:FindFirstChild("HumanoidRootPart")
                     elseif TARGET_PART == "Random" then
                         local parts = {character:FindFirstChild("Head"), character:FindFirstChild("HumanoidRootPart"), character:FindFirstChild("LeftArm"), character:FindFirstChild("RightArm"), character:FindFirstChild("LeftLeg"), character:FindFirstChild("RightLeg")}
-                        targetPart = parts[math.random(1, #parts)]
+                        local validParts = {}
+                        for _, part in pairs(parts) do
+                            if part then table.insert(validParts, part) end
+                        end
+                        if #validParts > 0 then
+                            targetPart = validParts[math.random(1, #validParts)]
+                        end
                     end
                     
                     if targetPart then
@@ -379,20 +384,27 @@ local function startAimbot()
             end
             
             -- Aim at target
-            if closestPlayer and closestPlayer.Character then
+            if closestPlayer and closestPlayer.Character and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                 currentTarget = closestPlayer
-                local targetPart = closestPlayer.Character:FindFirstChild("HumanoidRootPart")
+                local targetPart = nil
                 
+                -- Select target part for aiming
                 if TARGET_PART == "Head" then
                     targetPart = closestPlayer.Character:FindFirstChild("Head")
                 elseif TARGET_PART == "Torso" then
                     targetPart = closestPlayer.Character:FindFirstChild("HumanoidRootPart")
                 elseif TARGET_PART == "Random" then
                     local parts = {closestPlayer.Character:FindFirstChild("Head"), closestPlayer.Character:FindFirstChild("HumanoidRootPart"), closestPlayer.Character:FindFirstChild("LeftArm"), closestPlayer.Character:FindFirstChild("RightArm"), closestPlayer.Character:FindFirstChild("LeftLeg"), closestPlayer.Character:FindFirstChild("RightLeg")}
-                    targetPart = parts[math.random(1, #parts)]
+                    local validParts = {}
+                    for _, part in pairs(parts) do
+                        if part then table.insert(validParts, part) end
+                    end
+                    if #validParts > 0 then
+                        targetPart = validParts[math.random(1, #validParts)]
+                    end
                 end
                 
-                if targetPart and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                if targetPart then
                     -- Apply hit chance
                     if math.random(1, 100) <= HIT_CHANCE then
                         -- Aim directly at target
