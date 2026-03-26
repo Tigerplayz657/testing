@@ -115,21 +115,9 @@ espCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
 espCategory.Font = Enum.Font.SourceSansBold
 espCategory.TextSize = 18
 
-local trollCategory = Instance.new("TextButton", sidebar)
-trollCategory.Size = UDim2.new(1, -20, 0, 50)
-trollCategory.Position = UDim2.new(0, 10, 0, 80)
-trollCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
-trollCategory.BackgroundTransparency = 0.2
-trollCategory.BorderSizePixel = 1
-trollCategory.BorderColor3 = Color3.fromRGB(255, 100, 0)
-trollCategory.Text = "TROLL"
-trollCategory.TextColor3 = Color3.fromRGB(255, 200, 100)
-trollCategory.Font = Enum.Font.SourceSansBold
-trollCategory.TextSize = 18
-
 local combatCategory = Instance.new("TextButton", sidebar)
 combatCategory.Size = UDim2.new(1, -20, 0, 50)
-combatCategory.Position = UDim2.new(0, 10, 0, 140)
+combatCategory.Position = UDim2.new(0, 10, 0, 80)
 combatCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
 combatCategory.BackgroundTransparency = 0.2
 combatCategory.BorderSizePixel = 1
@@ -158,18 +146,7 @@ espContent.BorderSizePixel = 1
 espContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
 espContent.ScrollBarThickness = 8
 espContent.Visible = true
-espContent.CanvasSize = UDim2.new(0, 0, 0, 200)
-
-local trollContent = Instance.new("ScrollingFrame", contentFrame)
-trollContent.Size = UDim2.new(1, -20, 1, -20)
-trollContent.Position = UDim2.new(0, 10, 0, 10)
-trollContent.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
-trollContent.BackgroundTransparency = 0.2
-trollContent.BorderSizePixel = 1
-trollContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
-trollContent.ScrollBarThickness = 8
-trollContent.Visible = false
-trollContent.CanvasSize = UDim2.new(0, 0, 0, 150)
+espContent.CanvasSize = UDim2.new(0, 0, 0, 230)
 
 local combatContent = Instance.new("ScrollingFrame", contentFrame)
 combatContent.Size = UDim2.new(1, -20, 1, -20)
@@ -181,95 +158,6 @@ combatContent.BorderColor3 = Color3.fromRGB(255, 60, 0)
 combatContent.ScrollBarThickness = 8
 combatContent.Visible = false
 combatContent.CanvasSize = UDim2.new(0, 0, 0, 350)
-
--- Settings inputs
-local rangeInput = Instance.new("TextBox", combatContent)
-rangeInput.Size = UDim2.new(0, 120, 0, 30)
-rangeInput.Position = UDim2.new(0, 220, 0, 75)
-rangeInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
-rangeInput.BackgroundTransparency = 0.2
-rangeInput.BorderSizePixel = 1
-rangeInput.BorderColor3 = Color3.fromRGB(255, 80, 0)
-rangeInput.Text = "200"
-rangeInput.TextColor3 = Color3.fromRGB(255, 200, 100)
-rangeInput.Font = Enum.Font.SourceSans
-rangeInput.TextSize = 14
-rangeInput.PlaceholderText = "Range"
-
-local accuracyInput = Instance.new("TextBox", combatContent)
-accuracyInput.Size = UDim2.new(0, 120, 0, 30)
-accuracyInput.Position = UDim2.new(0, 220, 0, 130)
-accuracyInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
-accuracyInput.BackgroundTransparency = 0.2
-accuracyInput.BorderSizePixel = 1
-accuracyInput.BorderColor3 = Color3.fromRGB(255, 80, 0)
-accuracyInput.Text = "80"
-accuracyInput.TextColor3 = Color3.fromRGB(255, 200, 100)
-accuracyInput.Font = Enum.Font.SourceSans
-accuracyInput.TextSize = 14
-accuracyInput.PlaceholderText = "Hit %"
-
-local bloomInput = Instance.new("TextBox", combatContent)
-bloomInput.Size = UDim2.new(0, 120, 0, 30)
-bloomInput.Position = UDim2.new(0, 220, 0, 185)
-bloomInput.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
-bloomInput.BackgroundTransparency = 0.2
-bloomInput.BorderSizePixel = 1
-bloomInput.BorderColor3 = Color3.fromRGB(255, 80, 0)
-bloomInput.Text = "0.1"
-bloomInput.TextColor3 = Color3.fromRGB(255, 200, 100)
-bloomInput.Font = Enum.Font.SourceSans
-bloomInput.TextSize = 14
-bloomInput.PlaceholderText = "Bloom"
-
-local targetDropdown = Instance.new("TextButton", combatContent)
-targetDropdown.Size = UDim2.new(0, 120, 0, 30)
-targetDropdown.Position = UDim2.new(0, 220, 0, 240)
-targetDropdown.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
-targetDropdown.BackgroundTransparency = 0.2
-targetDropdown.BorderSizePixel = 1
-targetDropdown.BorderColor3 = Color3.fromRGB(255, 80, 0)
-targetDropdown.Text = "Head"
-targetDropdown.TextColor3 = Color3.fromRGB(255, 200, 100)
-targetDropdown.Font = Enum.Font.SourceSans
-targetDropdown.TextSize = 14
-
--- Update settings when inputs change
-rangeInput.FocusLost:Connect(function()
-    local newRange = tonumber(rangeInput.Text)
-    if newRange and newRange >= 0 and newRange <= 1000 then
-        AIMBOT_RANGE = newRange
-        rangeLabel.Text = "Range: " .. newRange .. " studs"
-    end
-end)
-
-accuracyInput.FocusLost:Connect(function()
-    local newAccuracy = tonumber(accuracyInput.Text)
-    if newAccuracy and newAccuracy >= 0 and newAccuracy <= 100 then
-        HIT_CHANCE = newAccuracy
-        accuracyLabel.Text = "Hit Chance: " .. newAccuracy .. "%"
-    end
-end)
-
-bloomInput.FocusLost:Connect(function()
-    local newBloom = tonumber(bloomInput.Text)
-    if newBloom and newBloom >= 0 and newBloom <= 5 then
-        BLOOM_AMOUNT = newBloom
-        bloomLabel.Text = "Bloom: " .. newBloom
-    end
-end)
-
--- Target part dropdown
-local targetOptions = {"Head", "Torso", "Random"}
-local currentTargetIndex = 1
-
-targetDropdown.MouseButton1Click:Connect(function()
-    currentTargetIndex = (currentTargetIndex % #targetOptions) + 1
-    local selectedTarget = targetOptions[currentTargetIndex]
-    TARGET_PART = selectedTarget
-    targetDropdown.Text = selectedTarget
-    targetLabel.Text = "Target: " .. selectedTarget
-end)
 
 -- Combat Buttons
 local function makeModernButton(text, parent, yPos)
@@ -303,204 +191,71 @@ end
 local espToggle = makeModernButton("ESP: OFF", espContent, 10)
 local xrayToggle = makeModernButton("X-Ray: OFF", espContent, 65)
 local nameToggle = makeModernButton("Names: OFF", espContent, 120)
-
--- Trolling Buttons
-local followToggle = makeModernButton("Follow Player: OFF", trollContent, 10)
-local followTargetLabel = makeModernButton("Target: None", trollContent, 65)
-followTargetLabel.TextColor3 = Color3.fromRGB(150,150,150)
+local teamDetectBtn = makeModernButton("Detect Teams", espContent, 175)
 
 -- Combat Buttons
-local aimbotToggle = makeModernButton("Aimbot: OFF", combatContent, 10)
-local rangeLabel = makeModernButton("Range: 200 studs", combatContent, 65)
+local rangeLabel = makeModernButton("Range: 200 studs", combatContent, 10)
 rangeLabel.TextColor3 = Color3.fromRGB(200,200,200)
-local accuracyLabel = makeModernButton("Hit Chance: 80%", combatContent, 120)
+local accuracyLabel = makeModernButton("Hit Chance: 80%", combatContent, 65)
 accuracyLabel.TextColor3 = Color3.fromRGB(200,200,200)
-local bloomLabel = makeModernButton("Bloom: 0.1", combatContent, 175)
+local bloomLabel = makeModernButton("Bloom: 0.1", combatContent, 120)
 bloomLabel.TextColor3 = Color3.fromRGB(200,200,200)
-local targetLabel = makeModernButton("Target: Head", combatContent, 230)
+local targetLabel = makeModernButton("Target: Head", combatContent, 175)
 targetLabel.TextColor3 = Color3.fromRGB(200,200,200)
 
 -- States
 local ESP_ENABLED = false
 local XRAY = false
 local SHOW_NAMES = false
-local FOLLOWING = false
-local TARGET_PLAYER = nil
--- Aimbot variables
-local AIMBOT_ENABLED = false
-local AIMBOT_RANGE = 200
-local HIT_CHANCE = 80
-local BLOOM_AMOUNT = 0.1
-local TARGET_PART = "Head"
--- Aimbot functionality
-local aimbotConnection
-local currentTarget = nil
-
-local function startAimbot()
-    if AIMBOT_ENABLED and aimbotConnection then
-        aimbotConnection:Disconnect()
-        aimbotConnection = nil
-    end
-    
-    AIMBOT_ENABLED = true
-    aimbotToggle.Text = "Aimbot: ON"
-    
-    aimbotConnection = UserInputService.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 and AIMBOT_ENABLED then
-            -- Wait a frame to ensure character exists
-            task.wait()
-            
-            if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
-                return
-            end
-            
-            -- Find closest player and store target part
-            local closestPlayer = nil
-            local closestDistance = math.huge
-            local storedTargetPart = nil
-            local camera = workspace.CurrentCamera
-            local myPosition = player.Character.HumanoidRootPart.Position
-            
-            for _, plr in pairs(Players:GetPlayers()) do
-                if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                    local character = plr.Character
-                    local targetPart = nil
-                    
-                    -- Select target part
-                    if TARGET_PART == "Head" then
-                        targetPart = character:FindFirstChild("Head")
-                    elseif TARGET_PART == "Torso" then
-                        targetPart = character:FindFirstChild("HumanoidRootPart")
-                    elseif TARGET_PART == "Random" then
-                        local parts = {character:FindFirstChild("Head"), character:FindFirstChild("HumanoidRootPart"), character:FindFirstChild("LeftArm"), character:FindFirstChild("RightArm"), character:FindFirstChild("LeftLeg"), character:FindFirstChild("RightLeg")}
-                        local validParts = {}
-                        for _, part in pairs(parts) do
-                            if part then table.insert(validParts, part) end
-                        end
-                        if #validParts > 0 then
-                            targetPart = validParts[math.random(1, #validParts)]
-                        end
-                    end
-                    
-                    if targetPart then
-                        local distance = (myPosition - targetPart.Position).Magnitude
-                        if distance < closestDistance and distance <= AIMBOT_RANGE then
-                            closestDistance = distance
-                            closestPlayer = plr
-                            storedTargetPart = targetPart
-                        end
-                    end
-                end
-            end
-            
-            -- Aim at target using camera instead of CFrame manipulation
-            if closestPlayer and closestPlayer.Character and storedTargetPart then
-                currentTarget = closestPlayer
-                
-                if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and camera then
-                    -- Apply hit chance
-                    if math.random(1, 100) <= HIT_CHANCE then
-                        -- Aim directly at target using camera
-                        local targetPosition = storedTargetPart.Position
-                        local lookAtCFrame = CFrame.new(camera.CFrame.Position, targetPosition)
-                        
-                        -- Smooth aiming to avoid detection
-                        local currentCFrame = camera.CFrame
-                        local targetCFrame = currentCFrame:Lerp(lookAtCFrame, 0.3) -- 30% smoothing
-                        camera.CFrame = targetCFrame
-                        
-                        -- Visual feedback: flash aimbot button
-                        aimbotToggle.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-                        task.wait(0.1)
-                        aimbotToggle.BackgroundColor3 = Color3.fromRGB(35, 18, 0)
-                    else
-                        -- Apply bloom (miss)
-                        if BLOOM_AMOUNT > 0 then
-                            local randomOffset = Vector3.new(
-                                (math.random() - 0.5) * BLOOM_AMOUNT * 10,
-                                (math.random() - 0.5) * BLOOM_AMOUNT * 10,
-                                (math.random() - 0.5) * BLOOM_AMOUNT * 10
-                            )
-                            local targetPosition = storedTargetPart.Position + randomOffset
-                            local lookAtCFrame = CFrame.new(camera.CFrame.Position, targetPosition)
-                            
-                            -- Smooth aiming with bloom
-                            local currentCFrame = camera.CFrame
-                            local targetCFrame = currentCFrame:Lerp(lookAtCFrame, 0.3)
-                            camera.CFrame = targetCFrame
-                            
-                            -- Visual feedback: flash aimbot button
-                            aimbotToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
-                            task.wait(0.1)
-                            aimbotToggle.BackgroundColor3 = Color3.fromRGB(35, 18, 0)
-                        end
-                    end
-                end
-            else
-                currentTarget = nil
-            end
-        end
-    end)
-end
-
-local function stopAimbot()
-    if aimbotConnection then
-        aimbotConnection:Disconnect()
-        aimbotConnection = nil
-    end
-    AIMBOT_ENABLED = false
-    aimbotToggle.Text = "Aimbot: OFF"
-    currentTarget = nil
-end
-
-aimbotToggle.MouseButton1Click:Connect(function()
-    if AIMBOT_ENABLED then
-        stopAimbot()
-    else
-        startAimbot()
-    end
-end)
 
 -- Category switching
 espCategory.MouseButton1Click:Connect(function()
     espContent.Visible = true
-    trollContent.Visible = false
     combatContent.Visible = false
     espCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
-    trollCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
-    combatCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
-end)
-
-trollCategory.MouseButton1Click:Connect(function()
-    espContent.Visible = false
-    trollContent.Visible = true
-    combatContent.Visible = false
-    trollCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
-    espCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
     combatCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
 end)
 
 combatCategory.MouseButton1Click:Connect(function()
     espContent.Visible = false
-    trollContent.Visible = false
     combatContent.Visible = true
     combatCategory.BackgroundColor3 = Color3.fromRGB(60, 30, 0)
-    espCategory.BackgroundColor3 = Color3.fromRGB(30, 15, 0)
-    trollCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
+    espCategory.BackgroundColor3 = Color3.fromRGB(25, 12, 0)
 end)
+
+-- Team color mapping for Prison Life
+local TEAM_COLORS = {
+    ["Inmate"] = Color3.fromRGB(255, 165, 0),    -- Orange
+    ["Guard"] = Color3.fromRGB(0, 100, 255),     -- Blue  
+    ["Criminal"] = Color3.fromRGB(255, 0, 0),    -- Red
+    ["Neutral"] = Color3.fromRGB(128, 128, 128)  -- Gray
+}
+
+-- Get team color for a player
+local function getTeamColor(plr)
+    local team = plr.Team
+    if team and TEAM_COLORS[team.Name] then
+        return TEAM_COLORS[team.Name]
+    end
+    return Color3.fromRGB(255, 255, 255) -- Default white
+end
 
 -- ESP FUNCTIONS
 local function applyESP(character, plr)
     if not character then return end
     if plr == player then return end
 
+    local teamColor = getTeamColor(plr)
+
     -- Highlight (X-ray)
     local highlight = character:FindFirstChild("Highlight")
     if XRAY then
         if not highlight then
             highlight = Instance.new("Highlight")
-            highlight.FillColor = Color3.fromRGB(255, 0, 0)
+            highlight.FillColor = teamColor
             highlight.Parent = character
+        else
+            highlight.FillColor = teamColor
         end
         highlight.Enabled = ESP_ENABLED
     else
@@ -522,12 +277,18 @@ local function applyESP(character, plr)
                 local text = Instance.new("TextLabel", billboard)
                 text.Size = UDim2.new(1,0,1,0)
                 text.BackgroundTransparency = 1
-                text.TextColor3 = Color3.new(1,1,1)
+                text.TextColor3 = teamColor
                 text.TextStrokeTransparency = 0
                 text.TextStrokeColor3 = Color3.new(0,0,0)
                 text.Font = Enum.Font.SourceSansBold
                 text.TextSize = 14
                 text.Text = plr.Name
+            else
+                -- Update existing name tag color
+                local textLabel = billboard:FindFirstChildOfClass("TextLabel")
+                if textLabel then
+                    textLabel.TextColor3 = teamColor
+                end
             end
         else
             if billboard then billboard:Destroy() end
@@ -542,50 +303,6 @@ local function updateESP()
             applyESP(plr.Character, plr)
         end
     end
-end
-
--- Follow player function
-local followConnection
-local function startFollowing(target)
-    if FOLLOWING and followConnection then
-        followConnection:Disconnect()
-        followConnection = nil
-    end
-    
-    FOLLOWING = true
-    TARGET_PLAYER = target
-    followTargetLabel.Text = "Target: " .. target.Name
-    followToggle.Text = "Follow Player: ON"
-    
-    followConnection = RunService.Heartbeat:Connect(function()
-        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                local targetPos = target.Character.HumanoidRootPart.Position + Vector3.new(0, 0, 3)
-                player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPos)
-            end
-        else
-            -- Target left/disconnected
-            FOLLOWING = false
-            TARGET_PLAYER = nil
-            followTargetLabel.Text = "Target: None"
-            followToggle.Text = "Follow Player: OFF"
-            if followConnection then
-                followConnection:Disconnect()
-                followConnection = nil
-            end
-        end
-    end)
-end
-
-local function stopFollowing()
-    if followConnection then
-        followConnection:Disconnect()
-        followConnection = nil
-    end
-    FOLLOWING = false
-    TARGET_PLAYER = nil
-    followTargetLabel.Text = "Target: None"
-    followToggle.Text = "Follow Player: OFF"
 end
 
 -- Button logic
@@ -607,28 +324,25 @@ nameToggle.MouseButton1Click:Connect(function()
     updateESP()
 end)
 
-followToggle.MouseButton1Click:Connect(function()
-    if FOLLOWING then
-        stopFollowing()
-    else
-        -- Find closest player to follow
-        local closestPlayer = nil
-        local closestDistance = math.huge
-        
-        for _, plr in pairs(Players:GetPlayers()) do
-            if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                local distance = (player.Character.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                if distance < closestDistance then
-                    closestDistance = distance
-                    closestPlayer = plr
-                end
-            end
-        end
-        
-        if closestPlayer then
-            startFollowing(closestPlayer)
+-- Team detection button
+teamDetectBtn.MouseButton1Click:Connect(function()
+    local teamInfo = "=== TEAMS DETECTED ===\n"
+    local foundTeams = {}
+    
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr.Team and not foundTeams[plr.Team.Name] then
+            foundTeams[plr.Team.Name] = true
+            teamInfo = teamInfo .. plr.Team.Name .. "\n"
         end
     end
+    
+    -- Print to console for debugging
+    print(teamInfo)
+    
+    -- Also show in a notification if possible
+    local hint = Instance.new("Hint", workspace)
+    hint.Text = "Team names printed to console (F9)"
+    game:GetService("Debris"):AddItem(hint, 3)
 end)
 
 -- Auto apply when players spawn
